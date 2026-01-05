@@ -6,7 +6,33 @@
   <link rel="icon" type="image/png" href="/TME_Icon_64_White.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TME</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme ? savedTheme : (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <style>
+    :root {
+      --bg-color: %VITE_BACKGROUND_COLOUR_LIGHTMODE%;
+      --text-color: %VITE_FOREGROUND_COLOUR_LIGHTMODE%;
+      --button-bg: %VITE_ALT_COLOUR_LIGHTMODE%;
+      --button-border: %VITE_BORDER_COLOUR_LIGHTMODE%;
+      --nav-color: %VITE_NAV_COLOUR_LIGHTMODE%;
+    }
+
+    [data-theme='dark'] {
+      --bg-color: %VITE_BACKGROUND_COLOUR_DARKMODE%;
+      --text-color: %VITE_FOREGROUND_COLOUR_DARKMODE%;
+      --button-bg: %VITE_ALT_COLOUR_DARKMODE%;
+      --button-border: %VITE_BORDER_COLOUR_DARKMODE%;
+      --nav-color: %VITE_NAV_COLOUR_DARKMODE%;
+    }
+  </style>
 </head>
+
 
 <body>
   <div id="root"></div>

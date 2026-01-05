@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "dev": "docker compose up --build",
-    "lint": "echo \"Add ESLint later\"",
-    "test": "echo \"Add tests later\""
+    "build": "npm run build --workspaces --if-present",
+    "build:shared": "npm run build --workspace @tme/shared-types",
+    "build:apps": "npm run build --workspaces --if-present --include-workspace-root=false"
   }
 }

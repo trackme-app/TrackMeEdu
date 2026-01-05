@@ -1,0 +1,1 @@
+{"root":["./apps/frontend/vite.config.ts","./apps/frontend/src/App.tsx","./apps/frontend/src/main.tsx","./apps/frontend/src/context/ThemeContext.tsx","./apps/frontend/src/modules/common/header.frame.tsx"],"errors":true,"version":"5.9.3"}
