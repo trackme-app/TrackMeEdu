@@ -1,8 +1,10 @@
-import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "./AuthProvider";
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from './authProvider';
 
-export const RequireNoAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const RequireNoAuth: React.FC<{ children: React.ReactNode }> = ({
+    children,
+}) => {
     const auth = useAuth();
     const location = useLocation();
 

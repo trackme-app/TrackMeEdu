@@ -1,8 +1,8 @@
 import { type FC } from 'react';
-import { HeaderFrame } from './Header.frame';
-import { FooterFrame } from './Footer.frame';
+import { HeaderFrame } from './header.frame';
+import { FooterFrame } from './footer.frame';
 import { Routes, Route } from 'react-router-dom';
-import { Logout } from '../../auth/components/Logout.component';
+import { Logout } from '../../auth/components/logout.component';
 
 export const PageFrame: FC = () => {
     return (

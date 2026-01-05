@@ -1,4 +1,10 @@
-import React, { createContext, useState, useContext, useEffect, type ReactNode } from 'react';
+import React, {
+    createContext,
+    useState,
+    useContext,
+    useEffect,
+    type ReactNode,
+} from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -9,13 +15,18 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
+    children,
+}) => {
     const [theme, setTheme] = useState<Theme>(() => {
         const savedTheme = localStorage.getItem('theme') as Theme | null;
         if (savedTheme) {
             return savedTheme;
         }
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        if (
+            window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches
+        ) {
             return 'dark';
         }
         return 'light';

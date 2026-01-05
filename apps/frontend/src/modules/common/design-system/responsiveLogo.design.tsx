@@ -1,19 +1,19 @@
-import React from "react";
-import { useTheme } from "./ThemeContext";
+import React from 'react';
+import { useTheme } from './themeContext';
 
 export default function ResponsiveLogo() {
     const { theme } = useTheme();
-    const isDark = theme === "dark";
+    const isDark = theme === 'dark';
 
     const picStyle: React.CSSProperties = {
-        height: "2em",
-        maxHeight: "2.5rem",
-        width: "auto",
-        display: "inline-block",
-        verticalAlign: "middle"
+        height: '2em',
+        maxHeight: '2.5rem',
+        width: 'auto',
+        display: 'inline-block',
+        verticalAlign: 'middle',
     };
 
-    const colorSuffix = isDark ? "White" : "Black";
+    const colorSuffix = isDark ? 'White' : 'Black';
     const logoLarge = `TME_Logo_256_${colorSuffix}.png`;
     const logoSmall = `TME_Logo_128_${colorSuffix}.png`;
 

@@ -1,4 +1,4 @@
-import NavBar from '../components/NavBar.component';
+import NavBar from '../components/navBar.component';
 import { type FC } from 'react';
 
 export const HeaderFrame: FC = () => {

@@ -1,6 +1,6 @@
 import { type FC } from 'react';
-import DarkModeToggle from '../components/DarkModeToggle.component';
-import Copyright from '../components/Copyright.component';
+import DarkModeToggle from '../components/darkModeToggle.component';
+import Copyright from '../components/copyright.component';
 
 export const FooterFrame: FC = () => {
     const footerStyle: React.CSSProperties = {
