@@ -3,6 +3,14 @@ node_modules/
 dist/
 build/
 
+# Secrets
+.secret
+.secret.*
+*.secret
+*.secret.*
+/secrets
+/secrets/
+
 # Env
 .env
 .env.*
@@ -16,6 +24,10 @@ pnpm-debug.log*
 docker-data/
 docker-compose.*.yml
 compose.*.yml
+docker-compose.yml
+docker-compose.yaml
+compose.yml
+compose.yaml
 
 # OS
 .DS_Store
