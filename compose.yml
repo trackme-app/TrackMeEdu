@@ -1,15 +1,32 @@
+version: "3.9"
+
 services:
-    ui:
-        build:
-            context: .
-            dockerfile: ./apps/frontend/Dockerfile
+#   redis:
+#     image: redis:7
+#     ports:
+#       - "6379:6379"
 
-    api-gateway:
-        build:
-            context: .
-            dockerfile: ./apps/frontend/Dockerfile
+#   dynamodb:
+#     image: amazon/dynamodb-local
+#     ports:
+#       - "8000:8000"
+#     command: "-jar DynamoDBLocal.jar -sharedDb"
 
-    worker-courses:
-        build:
-            context: .
-            dockerfile: ./apps/frontend/Dockerfile
+#   localstack:
+#     image: localstack/localstack
+#     ports:
+#       - "4566:4566"
+#     environment:
+#       - SERVICES=s3
+#       - AWS_DEFAULT_REGION=eu-west-1
+
+  ui:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:3000
+    # depends_on:
+    #   - api-gateway
