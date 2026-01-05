@@ -1,4 +1,4 @@
-# Student Information Service (SIS)
+# Student Information Service
 
 ## Overview
 The SIS is the central registry for all student data. It acts as the source of truth for student demographics and academic history in the Education Management System.
