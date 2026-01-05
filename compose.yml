@@ -1,0 +1,15 @@
+services:
+    ui:
+        build:
+            context: .
+            dockerfile: ./apps/frontend/Dockerfile
+
+    api-gateway:
+        build:
+            context: .
+            dockerfile: ./apps/frontend/Dockerfile
+
+    worker-courses:
+        build:
+            context: .
+            dockerfile: ./apps/frontend/Dockerfile

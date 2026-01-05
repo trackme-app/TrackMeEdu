@@ -9,7 +9,8 @@ TrackMe Education (TME) is an open-source, self-hostable Education & Learner Man
 - Multi-tenant SaaS-ready design
 
 ## Repository Structure
-- apps/       → Frontend and backend services
+- apps/       → Frontend services
+- backend/    → Backend services
 - packages/   → Shared libraries (types, utilities)
 - infra/      → Infrastructure and local AWS parity tools
 
