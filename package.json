@@ -1,0 +1,13 @@
+{
+  "name": "v0.1",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "docker compose up --build",
+    "lint": "echo \"Add ESLint later\"",
+    "test": "echo \"Add tests later\""
+  }
+}
