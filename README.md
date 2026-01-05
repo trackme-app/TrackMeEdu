@@ -4,9 +4,9 @@ TrackMe Education (TME) is an open-source, self-hostable Education & Learner Man
 
 ## Goals
 - AWS-native architecture
-- Fully containerised local development
+- Fully containerised for local development
 - Microservice-based backend
-- Multi-tenant SaaS-ready design
+- Multi-tenant, SaaS-ready design
 
 ## Repository Structure
 - `apps/`       → User-facing applications (Frontend) and API entry points (Gateway).
