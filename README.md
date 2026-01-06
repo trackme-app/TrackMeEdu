@@ -42,3 +42,41 @@ TrackMe Education (TME) is an open-source, self-hostable Education & Learner Man
 
 ## Local Development
 Docker and Docker Compose are used to simulate AWS services locally.
+
+## Architecture
+The system is designed to be modular and scalable, with each service responsible for a specific domain of functionality. The API Gateway serves as the single entry point for all client requests, routing them to the appropriate microservice based on the request path.
+
+```mermaid
+architecture-beta
+    group public_api(logos:aws-vpc)[Public Subnet]
+    group private_api(logos:aws-vpc)[Private Subnet] in public_api
+
+    service gateway(logos:aws-api-gateway)[API Gateway] in public_api
+    service ui(logos:aws-amplify)[Frontend]
+
+    service auth(logos:aws-fargate)[Auth Service] in private_api
+    service user(logos:aws-fargate)[User Service] in private_api
+    service course(logos:aws-fargate)[Course Service] in private_api
+    service assessment(logos:aws-fargate)[Assessment Service] in private_api
+    service schedule(logos:aws-fargate)[Schedule Service] in private_api
+    service notification(logos:aws-fargate)[Notification Service] in private_api
+    service attendance(logos:aws-fargate)[Attendance Service] in private_api
+    service finance(logos:aws-fargate)[Finance Service] in private_api
+    service library(logos:aws-fargate)[Library Service] in private_api
+
+    service endUser(mdi:computer)[End User]
+
+    
+    endUser:L --> R:ui
+    ui:L --> R:gateway
+
+    gateway:L --> R:auth
+    gateway:L --> R:user
+    gateway:L --> R:course
+    gateway:L --> R:assessment
+    gateway:L --> R:schedule
+    gateway:L --> R:notification
+    gateway:L --> R:attendance
+    gateway:L --> R:finance
+    gateway:L --> R:library
+```
