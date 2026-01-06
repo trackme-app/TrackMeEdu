@@ -1,0 +1,33 @@
+name: Prettier Check
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  prettier:
+    if: github.head_ref != 'test' && github.head_ref != 'master'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Run Prettier (capture output)
+        id: prettier
+        run: |
+          npx -y prettier --check "**/*.{ts,tsx}" 2>&1 | tee prettier-output.txt
+
+      # This step only runs if Prettier fails
+      - name: Report Prettier failure
+        if: failure()
+        run: |
+          echo "❌ Prettier check failed:"
+          cat prettier-output.txt
+          exit 1
