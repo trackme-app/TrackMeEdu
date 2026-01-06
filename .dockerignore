@@ -19,3 +19,6 @@ compose.*.yml
 
 # OS
 .DS_Store
+
+# Linting output
+prettier-output.txt
