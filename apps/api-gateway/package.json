@@ -1,0 +1,26 @@
+{
+  "name": "@tme/apigateway",
+  "version": "1.0.0",
+  "description": "The API Gateway serves as the single entry point for all client requests in the Education Management System. It abstracts the underlying microservices architecture, providing a unified API for the frontend.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
+    "start": "node dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "axios": "^1.13.2",
+    "axios-retry": "^4.5.0",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "nodejs": "^0.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2"
+  }
+}

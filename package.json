@@ -7,7 +7,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "docker compose up --build",
+    "dev": "docker compose -f docker-compose.local.yml up --build",
+    "dev:down": "docker compose -f docker-compose.local.yml down --rmi all -v",
     "build": "npm run build --workspaces --if-present",
     "build:shared": "npm run build --workspace @tme/shared-types",
     "build:apps": "npm run build --workspaces --if-present --include-workspace-root=false"

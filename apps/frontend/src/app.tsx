@@ -7,6 +7,7 @@ import { AuthProvider } from './modules/common/services/auth/authProvider';
 import { RequireAuth } from './modules/common/services/auth/requireAuth';
 import { RequireNoAuth } from './modules/common/services/auth/requireNoAuth';
 import { PageFrame } from './modules/common/frames/page.frame';
+import { HealthCheck } from './modules/common/services/auth/healthCheck';
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                             path="/*"
                             element={
                                 <RequireAuth>
+                                    <HealthCheck />
                                     <PageFrame />
                                 </RequireAuth>
                             }
