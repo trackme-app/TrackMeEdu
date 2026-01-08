@@ -1,4 +1,4 @@
-import { JwtPayload } from './auth';
+import { JwtPayload } from './auth.type';
 
 export function isJwtPayload(payload: unknown): payload is JwtPayload {
     if (typeof payload !== 'object' || payload === null) return false;

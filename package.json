@@ -4,7 +4,8 @@
   "workspaces": [
     "apps/*",
     "services/*",
-    "packages/*"
+    "packages/*",
+    "services/Academic & Learning/Course & Curriculum"
   ],
   "scripts": {
     "dev": "docker compose -f docker-compose.local.yml up --build",

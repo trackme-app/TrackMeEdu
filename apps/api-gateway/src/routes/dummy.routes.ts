@@ -1,8 +1,13 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { DummyClient } from '../services/dummy.service';
 
 const router = Router();
 const client = new DummyClient();
+
+router.use((req: Request, res: Response, next: NextFunction) => {
+    res.header({ 'X-Tenant-Id': req.headers['x-tenant-id'], 'X-End-Service': 'Dummy' });
+    next();
+});
 
 router.get('/', async (req: Request, res: Response) => {
     try {
