@@ -1,4 +1,5 @@
 export interface Course {
+    tenantId: string; // Tenant identifier for isolation
     id: string; // Unique identifier
     name: string; // Course name
     description?: string; // Optional course description
