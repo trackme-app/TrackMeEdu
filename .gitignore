@@ -144,6 +144,7 @@ docker-compose.local.yml
 ############################################
 # Terraform
 .terraform/
+.terraform.lock.hcl
 *.tfstate
 *.tfstate.*
 crash.log
@@ -216,8 +217,3 @@ temp/
 *.old
 
 prettier-output.txt
-
-############################################
-# CDK SCRIPTS
-############################################
-infra/aws cdk/
