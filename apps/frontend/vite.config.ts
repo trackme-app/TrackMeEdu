@@ -7,6 +7,14 @@ export default defineConfig(({ mode }) => {
     const envDir = path.resolve(process.cwd(), '../../');
     const env = loadEnv(mode, envDir, '');
     return {
+        server: {
+            proxy: {
+                '/api': {
+                    target: 'http://api-gateway:3000',
+                    changeOrigin: false,
+                },
+            },
+        },
         plugins: [
             react(),
             {
