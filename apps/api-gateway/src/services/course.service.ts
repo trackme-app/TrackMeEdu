@@ -129,4 +129,54 @@ export class CourseClient {
             throw error;
         }
     }
+
+    async updateCourse(tenantId: string, id: string, course: Course, authToken?: string): Promise<Course> {
+        try {
+            const res = await this.axiosInstance.put<Course | { error: string }>(`${this.baseUrl}/${id}`, course, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw {
+                    message: data.error || "Failed to update course",
+                    statusCode: res.status
+                };
+            }
+
+            return res.data as Course;
+        } catch (error) {
+            this.handleError(error, "updateCourse");
+            throw error;
+        }
+    }
+
+    async deleteCourse(tenantId: string, id: string, authToken?: string): Promise<Course> {
+        try {
+            const res = await this.axiosInstance.delete<Course | { error: string }>(`${this.baseUrl}/${id}`, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw {
+                    message: data.error || "Failed to delete course",
+                    statusCode: res.status
+                };
+            }
+
+            return res.data as Course;
+        } catch (error) {
+            this.handleError(error, "deleteCourse");
+            throw error;
+        }
+    }
 }
+
+

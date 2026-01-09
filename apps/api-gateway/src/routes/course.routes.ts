@@ -61,4 +61,24 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
+router.put('/:id', async (req: Request, res: Response) => {
+    try {
+        const tenantId = req.headers['x-tenant-id'] as string;
+        const response = await client.updateCourse(tenantId, req.params.id, req.body as Course, req.headers.authorization as string);
+        res.json(response);
+    } catch (err: any) {
+        handleRouteError(err, res, 'PUT /:id');
+    }
+});
+
+router.delete('/:id', async (req: Request, res: Response) => {
+    try {
+        const tenantId = req.headers['x-tenant-id'] as string;
+        const response = await client.deleteCourse(tenantId, req.params.id, req.headers.authorization as string);
+        res.json(response);
+    } catch (err: any) {
+        handleRouteError(err, res, 'DELETE /:id');
+    }
+});
+
 export default router;
