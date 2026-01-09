@@ -9,12 +9,21 @@ router.use((req: Request, res: Response, next: NextFunction) => {
     next();
 });
 
-router.get('/', async (req: Request, res: Response) => {
+const handleRouteError = (err: any, res: Response, context: string) => {
+    const statusCode = err.statusCode || 500;
+    const errorMessage = err.message || 'Internal server error';
+
+    console.error(`[API Gateway Route][${context}] Error:`, { statusCode, errorMessage });
+
+    res.status(statusCode).json({ error: errorMessage });
+};
+
+router.get('/health', async (req: Request, res: Response) => {
     try {
         const response = await client.getDummyHealth(req.headers.authorization);
         res.json(response);
     } catch (err) {
-        res.status(500).json({ error: err });
+        handleRouteError(err, res, 'GET /health');
     }
 });
 
@@ -23,7 +32,7 @@ router.get('/dummyUser', async (req: Request, res: Response) => {
         const user = await client.getDummyUser(req.headers.authorization);
         res.json(user);
     } catch (err) {
-        res.status(500).json({ error: err });
+        handleRouteError(err, res, 'GET /dummyUser');
     }
 });
 

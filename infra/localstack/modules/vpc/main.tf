@@ -34,7 +34,7 @@ resource "aws_subnet" "public" {
 
   vpc_id                  = aws_vpc.this.id
   cidr_block              = cidrsubnet("10.0.0.0/16", 8, count.index)
-  availability_zone       = "us-east-1${element(["a", "b"], count.index)}"
+  availability_zone       = "eu-west-2${element(["a", "b"], count.index)}"
   map_public_ip_on_launch = true
 
   tags = {
@@ -52,7 +52,7 @@ resource "aws_subnet" "private" {
 
   vpc_id            = aws_vpc.this.id
   cidr_block        = cidrsubnet("10.0.0.0/16", 4, count.index + 4)
-  availability_zone = "us-east-1${element(["a", "b"], count.index)}"
+  availability_zone = "eu-west-2${element(["a", "b"], count.index)}"
 
   tags = {
     Name    = "tme-private-${count.index}"

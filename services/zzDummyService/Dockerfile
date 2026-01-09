@@ -1,6 +1,7 @@
 FROM node:24-alpine AS build
 WORKDIR /home/node/app
 COPY . .
+RUN npm install --workspace @tme/shared-types
 RUN npm install --workspace @tme/zzdummyservice
 RUN npm run build --workspace @tme/zzdummyservice
 
