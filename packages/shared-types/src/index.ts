@@ -2,3 +2,5 @@
 export * from './auth.type';
 export * from './auth.guard';
 export * from './course.type';
+export * from './httpError.type';
+export * from './serviceResponse.type';
