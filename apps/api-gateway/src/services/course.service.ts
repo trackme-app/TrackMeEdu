@@ -1,0 +1,182 @@
+import axios, { AxiosInstance } from "axios";
+import axiosRetry from "axios-retry";
+import { Course } from "@tme/shared-types";
+
+const BASE_URL = process.env.COURSE_SERVICE_URL || "http://worker-courseandcurriculum:3000/api/v1/course";
+
+interface courseHealth {
+    status: string;
+}
+
+export class CourseClient {
+    private baseUrl: string;
+    private axiosInstance: AxiosInstance;
+
+    constructor(baseUrl?: string) {
+        this.baseUrl = baseUrl || BASE_URL;
+        this.axiosInstance = axios.create({
+            validateStatus: () => true // Handle all status codes manually
+        });
+
+        axiosRetry(this.axiosInstance, {
+            retries: 3,
+            retryDelay: axiosRetry.exponentialDelay,
+            retryCondition: (error) => axiosRetry.isNetworkError(error),
+        });
+    }
+
+    private handleError(error: any, context: string) {
+        console.error(`[CourseClient][${context}] Error:`, error);
+
+        // If it's already a clean error we threw manually
+        if (error && error.statusCode && error.message) {
+            throw error;
+        }
+
+        // Handle Axios error (though validateStatus: () => true should prevent most throws)
+        if (axios.isAxiosError(error) && error.response) {
+            throw {
+                message: error.response.data?.error || error.response.data?.message || error.message,
+                statusCode: error.response.status
+            };
+        }
+
+        throw {
+            message: error.message || "Internal Service Communication Error",
+            statusCode: 500
+        };
+    }
+
+    async getCourseHealth(tenantId: string, authToken?: string): Promise<courseHealth> {
+        try {
+            const res = await this.axiosInstance.get<courseHealth>(`${this.baseUrl}/health`, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status !== 200) {
+                throw { message: "Health check failed", statusCode: res.status };
+            }
+            return res.data;
+        } catch (error) {
+            this.handleError(error, "getCourseHealth");
+            throw error; // Re-shadow for TS
+        }
+    }
+
+    async getCourses(tenantId: string, authToken?: string): Promise<Course[]> {
+        try {
+            const res = await this.axiosInstance.get<Course[] | { error: string }>(`${this.baseUrl}/`, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw { message: data.error || "Failed to fetch courses", statusCode: res.status };
+            }
+            return res.data as Course[];
+        } catch (error) {
+            this.handleError(error, "getCourses");
+            throw error;
+        }
+    }
+
+    async getCourseById(tenantId: string, id: string, authToken?: string): Promise<Course> {
+        try {
+            const res = await this.axiosInstance.get<Course | { error: string }>(`${this.baseUrl}/${id}`, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw { message: data.error || "Course not found", statusCode: res.status };
+            }
+            return res.data as Course;
+        } catch (error) {
+            this.handleError(error, "getCourseById");
+            throw error;
+        }
+    }
+
+    async insertCourse(tenantId: string, course: Course, authToken?: string): Promise<Course> {
+        try {
+            const res = await this.axiosInstance.post<Course | { error: string }>(`${this.baseUrl}/`, course, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw {
+                    message: data.error || "Failed to create course",
+                    statusCode: res.status
+                };
+            }
+
+            return res.data as Course;
+        } catch (error) {
+            this.handleError(error, "insertCourse");
+            throw error;
+        }
+    }
+
+    async updateCourse(tenantId: string, id: string, course: Course, authToken?: string): Promise<Course> {
+        try {
+            const res = await this.axiosInstance.put<Course | { error: string }>(`${this.baseUrl}/${id}`, course, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw {
+                    message: data.error || "Failed to update course",
+                    statusCode: res.status
+                };
+            }
+
+            return res.data as Course;
+        } catch (error) {
+            this.handleError(error, "updateCourse");
+            throw error;
+        }
+    }
+
+    async deleteCourse(tenantId: string, id: string, authToken?: string): Promise<Course> {
+        try {
+            const res = await this.axiosInstance.delete<Course | { error: string }>(`${this.baseUrl}/${id}`, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw {
+                    message: data.error || "Failed to delete course",
+                    statusCode: res.status
+                };
+            }
+
+            return res.data as Course;
+        } catch (error) {
+            this.handleError(error, "deleteCourse");
+            throw error;
+        }
+    }
+}
+
+
