@@ -17,10 +17,10 @@
       // Extract tenant name from subdomain or use 'default'
       const hostname = window.location.hostname;
       let tenantName;
-      if (hostname == "localhost") {
-        tenantName = "test";
+      if (hostname.endsWith('.track-me.app')) {
+        tenantName = hostname.split('.')[0];
       } else {
-        tenantName = hostname.split('.')[0] || 'test';
+        tenantName = 'test';
       }
 
       async function applyColorScheme() {
@@ -52,9 +52,14 @@
             // Dark mode
             root.style.setProperty('--bg-color-dark', colourScheme.background_darkmode || '%VITE_BACKGROUND_COLOUR_DARKMODE%');
             root.style.setProperty('--text-color-dark', colourScheme.foreground_darkmode || '%VITE_FOREGROUND_COLOUR_DARKMODE%');
-            root.style.setProperty('--button-bg-dark', colourScheme.alt_darkmode || '%VITE_ALT_DARKMODE%');
-            root.style.setProperty('--button-border-dark', colourScheme.border_darkmode || '%VITE_BORDER_DARKMODE%');
-            root.style.setProperty('--nav-color-dark', colourScheme.nav_darkmode || '%VITE_NAV_DARKMODE%');
+            root.style.setProperty('--button-bg-dark', colourScheme.alt_darkmode || '%VITE_ALT_COLOUR_DARKMODE%');
+            root.style.setProperty('--button-border-dark', colourScheme.border_darkmode || '%VITE_BORDER_COLOUR_DARKMODE%');
+            root.style.setProperty('--nav-color-dark', colourScheme.nav_darkmode || '%VITE_NAV_COLOUR_DARKMODE%');
+
+            root.style.setProperty('--button-color-pos-light', colourScheme.button_color_pos_lightmode || '%VITE_BUTTON_COLOUR_POSITIVE_LIGHTMODE%');
+            root.style.setProperty('--button-color-pos-dark', colourScheme.button_color_pos_darkmode || '%VITE_BUTTON_COLOUR_POSITIVE_DARKMODE%');
+            root.style.setProperty('--button-color-neg-light', colourScheme.button_color_neg_lightmode || '%VITE_BUTTON_COLOUR_NEGATIVE_LIGHTMODE%');
+            root.style.setProperty('--button-color-neg-dark', colourScheme.button_color_neg_darkmode || '%VITE_BUTTON_COLOUR_NEGATIVE_DARKMODE%');
           }
         } catch (error) {
           console.error('Error loading dynamic colour scheme:', error);
@@ -94,12 +99,16 @@
       --button-bg-light: %VITE_ALT_COLOUR_LIGHTMODE%;
       --button-border-light: %VITE_BORDER_COLOUR_LIGHTMODE%;
       --nav-color-light: %VITE_NAV_COLOUR_LIGHTMODE%;
+      --button-color-pos-light: %VITE_BUTTON_COLOR_POSITIVE_LIGHTMODE%;
+      --button-color-neg-light: %VITE_BUTTON_COLOR_NEGATIVE_LIGHTMODE%;
 
       --bg-color-dark: %VITE_BACKGROUND_COLOUR_DARKMODE%;
       --text-color-dark: %VITE_FOREGROUND_COLOUR_DARKMODE%;
       --button-bg-dark: %VITE_ALT_COLOUR_DARKMODE%;
       --button-border-dark: %VITE_BORDER_COLOUR_DARKMODE%;
       --nav-color-dark: %VITE_NAV_COLOUR_DARKMODE%;
+      --button-color-pos-dark: %VITE_BUTTON_COLOR_POSITIVE_DARKMODE%;
+      --button-color-neg-dark: %VITE_BUTTON_COLOR_NEGATIVE_DARKMODE%;
 
       /* Map to active variables */
       --bg-color: var(--bg-color-light);
@@ -107,6 +116,8 @@
       --button-bg: var(--button-bg-light);
       --button-border: var(--button-border-light);
       --nav-color: var(--nav-color-light);
+      --button-color-pos: var(--button-color-pos-light);
+      --button-color-neg: var(--button-color-neg-light);
     }
 
     [data-theme='dark'] {
@@ -115,6 +126,8 @@
       --button-bg: var(--button-bg-dark);
       --button-border: var(--button-border-dark);
       --nav-color: var(--nav-color-dark);
+      --button-color-pos: var(--button-color-pos-dark);
+      --button-color-neg: var(--button-color-neg-dark);
     }
   </style>
 </head>
