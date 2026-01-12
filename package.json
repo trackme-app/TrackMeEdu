@@ -5,7 +5,8 @@
     "apps/*",
     "services/*",
     "packages/*",
-    "services/Academic & Learning/Course & Curriculum"
+    "services/Academic & Learning/Course & Curriculum",
+    "services/Administrative/Tenancy"
   ],
   "scripts": {
     "dev": "docker compose -f docker-compose.local.yml up --build",

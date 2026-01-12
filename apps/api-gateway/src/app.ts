@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import dummyRoutes from './routes/dummy.routes';
 import healthRoutes from './routes/health.routes';
 import courseRoutes from './routes/course.routes';
+import tenancyRoutes from './routes/tenancy.routes';
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.json());
 app.use('/api/v1/health', healthRoutes);
 app.use('/api/v1/dummy', dummyRoutes);
 app.use('/api/v1/course', courseRoutes);
+app.use('/api/v1/tenant', tenancyRoutes);
 
 // Global error handler - catches any unhandled errors
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

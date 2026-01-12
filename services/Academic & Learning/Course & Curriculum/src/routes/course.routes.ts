@@ -11,11 +11,21 @@ router.get('/health', (req: Request, res: Response) => {
 router.get('/', async (req: Request, res: Response) => {
     try {
         const result = await getCourses(req.headers['x-tenant-id'] as string);
-        if (!result.success) {
-            res.status(result.statusCode).json({ error: result.error });
+        const response = {
+            success: result.success,
+            statusCode: result.statusCode,
+            data: result.data,
+            error: result.error,
+            tenantId: req.headers['x-tenant-id'] as string,
+            path: req.originalUrl
+        };
+
+        if (!response.success) {
+            res.status(response.statusCode).json({ error: response.error });
             return;
         }
-        res.status(result.statusCode).json(result.data);
+
+        res.status(response.statusCode).json(response.data);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch courses' });
     }
@@ -24,11 +34,21 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/:id', async (req: Request, res: Response) => {
     try {
         const result = await getCourseById(req.headers['x-tenant-id'] as string, req.params.id);
-        if (!result.success) {
-            res.status(result.statusCode).json({ error: result.error });
+        const response = {
+            success: result.success,
+            statusCode: result.statusCode,
+            data: result.data,
+            error: result.error,
+            tenantId: req.headers['x-tenant-id'] as string,
+            path: req.originalUrl
+        };
+
+        if (!response.success) {
+            res.status(response.statusCode).json({ error: response.error });
             return;
         }
-        res.status(result.statusCode).json(result.data);
+
+        res.status(response.statusCode).json(response.data);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch course' });
     }
@@ -37,13 +57,21 @@ router.get('/:id', async (req: Request, res: Response) => {
 router.post('/', async (req: Request, res: Response) => {
     try {
         const result = await insertCourse(req.headers['x-tenant-id'] as string, req.body as Course);
+        const response = {
+            success: result.success,
+            statusCode: result.statusCode,
+            data: result.data,
+            error: result.error,
+            tenantId: req.headers['x-tenant-id'] as string,
+            path: req.originalUrl
+        };
 
-        if (!result.success) {
-            res.status(result.statusCode).json({ error: result.error });
+        if (!response.success) {
+            res.status(response.statusCode).json({ error: response.error });
             return;
         }
 
-        res.status(result.statusCode).json(result.data);
+        res.status(response.statusCode).json(response.data);
     } catch (error) {
         console.error('Unexpected error in POST /:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -53,13 +81,21 @@ router.post('/', async (req: Request, res: Response) => {
 router.put('/:id', async (req: Request, res: Response) => {
     try {
         const result = await updateCourse(req.headers['x-tenant-id'] as string, req.params.id, req.body as Course);
+        const response = {
+            success: result.success,
+            statusCode: result.statusCode,
+            data: result.data,
+            error: result.error,
+            tenantId: req.headers['x-tenant-id'] as string,
+            path: req.originalUrl
+        };
 
-        if (!result.success) {
-            res.status(result.statusCode).json({ error: result.error });
+        if (!response.success) {
+            res.status(response.statusCode).json({ error: response.error });
             return;
         }
 
-        res.status(result.statusCode).json(result.data);
+        res.status(response.statusCode).json(response.data);
     } catch (error) {
         console.error('Unexpected error in PUT /:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -70,13 +106,21 @@ router.put('/:id', async (req: Request, res: Response) => {
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
         const result = await deleteCourse(req.headers['x-tenant-id'] as string, req.params.id);
+        const response = {
+            success: result.success,
+            statusCode: result.statusCode,
+            data: result.data,
+            error: result.error,
+            tenantId: req.headers['x-tenant-id'] as string,
+            path: req.originalUrl
+        };
 
-        if (!result.success) {
-            res.status(result.statusCode).json({ error: result.error });
+        if (!response.success) {
+            res.status(response.statusCode).json({ error: response.error });
             return;
         }
 
-        res.status(result.statusCode).json(result.data);
+        res.status(response.statusCode).json(response.data);
     } catch (error) {
         console.error('Unexpected error in DELETE /:', error);
         res.status(500).json({ error: 'Internal server error' });

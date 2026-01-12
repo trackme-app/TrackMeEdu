@@ -71,3 +71,22 @@ resource "aws_dynamodb_table" "tables" {
     prevent_destroy = false
   }
 }
+
+resource "aws_dynamodb_table" "tenants" {
+  name           = "Tenants"
+  billing_mode   = "PAY_PER_REQUEST"
+  hash_key       = "id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+
+  tags = {
+    Environment = "local"
+  }
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}
