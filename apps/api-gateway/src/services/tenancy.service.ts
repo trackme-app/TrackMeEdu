@@ -160,6 +160,27 @@ export class TenancyClient {
         }
     }
 
+    async getTenantByName(tenant_name: string, authToken?: string): Promise<Tenant> {
+        console.log(tenant_name);
+        try {
+            const res = await this.axiosInstance.get<Tenant | { error: string }>(`${this.baseUrl}/`, {
+                params: { tenant_name },
+                headers: {
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw { message: data.error || "Tenant not found", statusCode: res.status };
+            }
+            return res.data as Tenant;
+        } catch (error) {
+            this.handleError(error, "getTenantByName");
+            throw error;
+        }
+    }
+
     async insertTenant(tenant: Tenant, authToken?: string): Promise<Tenant> {
         try {
             const res = await this.axiosInstance.post<Tenant | { error: string }>(`${this.baseUrl}/`, tenant, {

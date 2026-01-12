@@ -37,6 +37,39 @@ export const getTenantById = async (id: string): Promise<ServiceResponse<Tenant>
     }
 }
 
+export const getTenantByName = async (tenant_name: string): Promise<ServiceResponse<Tenant>> => {
+    const params = {
+        TableName: TABLE_NAME,
+        FilterExpression: "tenant_name = :tenant_name",
+        ExpressionAttributeValues: {
+            ":tenant_name": tenant_name,
+        },
+    }
+
+    try {
+        const data = await dbclient.send(new ScanCommand(params));
+        if (!data.Items || data.Items.length === 0) {
+            return {
+                success: false,
+                statusCode: 404,
+                error: "Tenant not found"
+            };
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            data: data.Items[0] as Tenant
+        };
+    } catch (error) {
+        console.error("Error fetching tenant by name:", error);
+        return {
+            success: false,
+            statusCode: 500,
+            error: "Failed to fetch tenant"
+        };
+    }
+}
+
 export const getTenantSettings = async (id: string): Promise<ServiceResponse<TenantSettings>> => {
     const params = {
         TableName: TABLE_NAME,
