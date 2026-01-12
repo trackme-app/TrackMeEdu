@@ -9,4 +9,8 @@ export interface ColourScheme {
     alt_darkmode: string | null;
     nav_darkmode: string | null;
     border_darkmode: string | null;
+    button_color_pos_lightmode: string | null;
+    button_color_pos_darkmode: string | null;
+    button_color_neg_lightmode: string | null;
+    button_color_neg_darkmode: string | null;
 }
