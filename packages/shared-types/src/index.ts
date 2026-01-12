@@ -5,3 +5,4 @@ export * from './course.type';
 export * from './serviceResponse.type';
 export * from './tenant.type';
 export * from './tenantSettings.type';
+export * from './colourScheme.type';

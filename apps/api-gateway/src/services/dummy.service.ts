@@ -33,13 +33,25 @@ export class DummyClient {
     }
 
     private handleError(error: any, context: string) {
-        logger.error({
-            "dt": Date(),
-            "service": "Gateway.DummyClient",
-            "context": context,
-            "message": error.message,
-            "httpStatus": error.statusCode
-        });
+        if (error.statusCode >= 500) {
+            logger.error({
+                "dt": Date(),
+                "service": "Gateway.DummyClient",
+                "context": context,
+                "message": error.message,
+                "httpStatus": error.statusCode,
+                "tenantId": error.tenantId
+            });
+        } else {
+            logger.warn({
+                "dt": Date(),
+                "service": "Gateway.DummyClient",
+                "context": context,
+                "message": error.message,
+                "httpStatus": error.statusCode,
+                "tenantId": error.tenantId
+            });
+        }
 
         if (error && error.statusCode && error.message) {
             throw error;

@@ -47,7 +47,6 @@ export class CourseClient {
             });
         }
 
-
         // If it's already a clean error we threw manually
         if (error && error.statusCode && error.message) {
             throw error;

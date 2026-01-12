@@ -1,5 +1,5 @@
 import { PutCommand, GetCommand, UpdateCommand, DeleteCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
-import { Tenant, TenantSettings, ServiceResponse } from "@tme/shared-types";
+import { Tenant, TenantSettings, ServiceResponse, ColourScheme } from "@tme/shared-types";
 import dbclient from "../clients/dynamodb.client";
 import { v4 as uuidv4 } from "uuid";
 
@@ -33,6 +33,70 @@ export const getTenantById = async (id: string): Promise<ServiceResponse<Tenant>
             success: false,
             statusCode: 500,
             error: "Failed to fetch tenant"
+        };
+    }
+}
+
+export const getTenantSettings = async (id: string): Promise<ServiceResponse<TenantSettings>> => {
+    const params = {
+        TableName: TABLE_NAME,
+        Key: {
+            id,
+        },
+    }
+
+    try {
+        const data = await dbclient.send(new GetCommand(params));
+        if (!data.Item) {
+            return {
+                success: false,
+                statusCode: 404,
+                error: "Tenant settings not found"
+            };
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            data: data.Item?.tenant_settings as TenantSettings
+        };
+    } catch (error) {
+        console.error("Error fetching tenant settings by ID:", error);
+        return {
+            success: false,
+            statusCode: 500,
+            error: "Failed to fetch tenant settings"
+        };
+    }
+}
+
+export const getTenantColourScheme = async (id: string): Promise<ServiceResponse<ColourScheme>> => {
+    const params = {
+        TableName: TABLE_NAME,
+        Key: {
+            id,
+        },
+    }
+
+    try {
+        const data = await dbclient.send(new GetCommand(params));
+        if (!data.Item) {
+            return {
+                success: false,
+                statusCode: 404,
+                error: "Tenant colour scheme not found"
+            };
+        }
+        return {
+            success: true,
+            statusCode: 200,
+            data: data.Item?.tenant_settings?.colour_scheme as ColourScheme
+        };
+    } catch (error) {
+        console.error("Error fetching tenant colour scheme by ID:", error);
+        return {
+            success: false,
+            statusCode: 500,
+            error: "Failed to fetch tenant colour scheme"
         };
     }
 }

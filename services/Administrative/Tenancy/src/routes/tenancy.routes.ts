@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getTenants, getTenantById, insertTenant, updateTenant, deleteTenant } from '../services/tenancy.service';
+import { getTenants, getTenantById, insertTenant, updateTenant, deleteTenant, getTenantSettings, getTenantColourScheme } from '../services/tenancy.service';
 import { Tenant } from '@tme/shared-types';
 
 const router = Router();
@@ -31,6 +31,32 @@ router.get('/:id', async (req: Request, res: Response) => {
         res.status(result.statusCode).json(result.data);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch tenant' });
+    }
+});
+
+router.get('/:id/settings', async (req: Request, res: Response) => {
+    try {
+        const result = await getTenantSettings(req.params.id);
+        if (!result.success) {
+            res.status(result.statusCode).json({ error: result.error });
+            return;
+        }
+        res.status(result.statusCode).json(result.data);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch tenant settings' });
+    }
+});
+
+router.get('/:id/colour-scheme', async (req: Request, res: Response) => {
+    try {
+        const result = await getTenantColourScheme(req.params.id);
+        if (!result.success) {
+            res.status(result.statusCode).json({ error: result.error });
+            return;
+        }
+        res.status(result.statusCode).json(result.data);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch tenant colour scheme' });
     }
 });
 

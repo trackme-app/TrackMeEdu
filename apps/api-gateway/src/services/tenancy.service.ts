@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
-import { Tenant, TenantSettings } from "@tme/shared-types";
+import { ColourScheme, Tenant, TenantSettings } from "@tme/shared-types";
 import logger from "../logger/logger";
 
 const BASE_URL = process.env.TENANCY_SERVICE_URL || "http://worker-tenancy:3000/api/v1/tenant";
@@ -27,13 +27,25 @@ export class TenancyClient {
     }
 
     private handleError(error: any, context: string) {
-        logger.error({
-            "dt": Date(),
-            "service": "Gateway.TenancyClient",
-            "context": context,
-            "message": error.message,
-            "httpStatus": error.statusCode
-        });
+        if (error.statusCode >= 500) {
+            logger.error({
+                "dt": Date(),
+                "service": "Gateway.TenancyClient",
+                "context": context,
+                "message": error.message,
+                "httpStatus": error.statusCode,
+                "tenantId": error.tenantId
+            });
+        } else {
+            logger.warn({
+                "dt": Date(),
+                "service": "Gateway.TenancyClient",
+                "context": context,
+                "message": error.message,
+                "httpStatus": error.statusCode,
+                "tenantId": error.tenantId
+            });
+        }
 
         // If it's already a clean error we threw manually
         if (error && error.statusCode && error.message) {
@@ -87,6 +99,44 @@ export class TenancyClient {
             return res.data as Tenant[];
         } catch (error) {
             this.handleError(error, "getTenants");
+            throw error;
+        }
+    }
+
+    async getTenantSettings(id: string, authToken?: string): Promise<TenantSettings> {
+        try {
+            const res = await this.axiosInstance.get<TenantSettings | { error: string }>(`${this.baseUrl}/${id}/settings`, {
+                headers: {
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw { message: data.error || "Tenant settings not found", statusCode: res.status };
+            }
+            return res.data as TenantSettings;
+        } catch (error) {
+            this.handleError(error, "getTenantSettings");
+            throw error;
+        }
+    }
+
+    async getTenantColourScheme(id: string, authToken?: string): Promise<ColourScheme> {
+        try {
+            const res = await this.axiosInstance.get<ColourScheme | { error: string }>(`${this.baseUrl}/${id}/colour-scheme`, {
+                headers: {
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw { message: data.error || "Tenant colour scheme not found", statusCode: res.status };
+            }
+            return res.data as ColourScheme;
+        } catch (error) {
+            this.handleError(error, "getTenantColourScheme");
             throw error;
         }
     }

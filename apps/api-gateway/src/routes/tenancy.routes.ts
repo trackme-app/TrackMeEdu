@@ -45,6 +45,24 @@ router.get('/:tenantId', async (req: Request, res: Response) => {
     }
 });
 
+router.get('/:tenantId/settings', async (req: Request, res: Response) => {
+    try {
+        const tenantSettings = await tenancyClient.getTenantSettings(req.params.tenantId as string, req.headers.authorization as string);
+        res.status(200).json(tenantSettings);
+    } catch (err: any) {
+        handleRouteError(err, res, 'GET /:tenantId/settings');
+    }
+});
+
+router.get('/:tenantId/colour-scheme', async (req: Request, res: Response) => {
+    try {
+        const colourScheme = await tenancyClient.getTenantColourScheme(req.params.tenantId as string, req.headers.authorization as string);
+        res.status(200).json(colourScheme);
+    } catch (err: any) {
+        handleRouteError(err, res, 'GET /:tenantId/colour-scheme');
+    }
+});
+
 router.post('/', async (req: Request, res: Response) => {
     try {
         const tenant = await tenancyClient.insertTenant(req.body as Tenant, req.headers.authorization as string);
