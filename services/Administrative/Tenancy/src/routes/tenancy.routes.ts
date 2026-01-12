@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getTenants, getTenantById, insertTenant, updateTenant, deleteTenant, getTenantSettings, getTenantColourScheme } from '../services/tenancy.service';
+import { getTenants, getTenantById, insertTenant, updateTenant, deleteTenant, getTenantSettings, getTenantColourScheme, getTenantByName } from '../services/tenancy.service';
 import { Tenant } from '@tme/shared-types';
 
 const router = Router();
@@ -9,15 +9,29 @@ router.get('/health', (req: Request, res: Response) => {
 });
 
 router.get('/', async (req: Request, res: Response) => {
-    try {
-        const result = await getTenants();
-        if (!result.success) {
-            res.status(result.statusCode).json({ error: result.error });
+    if (req.query.tenant_name) {
+        try {
+            const result = await getTenantByName(req.query.tenant_name as string);
+            if (!result.success) {
+                res.status(result.statusCode).json({ error: result.error });
+                return;
+            }
+            res.status(result.statusCode).json({ id: result.data?.id });
             return;
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to fetch tenant by name' });
         }
-        res.status(result.statusCode).json(result.data);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch tenants' });
+    } else {
+        try {
+            const result = await getTenants();
+            if (!result.success) {
+                res.status(result.statusCode).json({ error: result.error });
+                return;
+            }
+            res.status(result.statusCode).json(result.data);
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to fetch tenants' });
+        }
     }
 });
 

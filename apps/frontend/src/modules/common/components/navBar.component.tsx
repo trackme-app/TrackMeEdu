@@ -3,13 +3,14 @@ import {
     NavLink,
     Bars,
     NavMenu,
+    NavEnd,
     NavBtn,
     NavBtnLink,
 } from './navComponents/nav.components';
 import { type FC } from 'react';
 import { useNavMenu } from '../hooks/useNavMenu.hook';
 import ResponsiveLogo from '../design-system/responsiveLogo.design';
-import { FaSignOutAlt } from 'react-icons/fa';
+import { FaCog, FaSignOutAlt, FaUser } from 'react-icons/fa';
 
 const NavBar: FC = () => {
     const { isOpen, toggle, close } = useNavMenu();
@@ -27,16 +28,7 @@ const NavBar: FC = () => {
                         }
                         onClick={close}
                     >
-                        <ResponsiveLogo />
-                    </NavLink>
-                    <NavLink
-                        to="/events"
-                        className={({ isActive }: { isActive: boolean }) =>
-                            isActive ? 'active' : ''
-                        }
-                        onClick={close}
-                    >
-                        Events
+                        <ResponsiveLogo /> Dashboard
                     </NavLink>
                     <NavLink
                         to="/annual"
@@ -66,11 +58,23 @@ const NavBar: FC = () => {
                         Blogs
                     </NavLink>
                 </NavMenu>
-                <NavBtn>
-                    <NavBtnLink to="/logout" onClick={close}>
-                        <FaSignOutAlt style={{ verticalAlign: 'middle' }} />
-                    </NavBtnLink>
-                </NavBtn>
+                <NavEnd>
+                    <NavBtn aria-label="Settings">
+                        <NavBtnLink aria-label="Settings" to="/settings" onClick={close}>
+                            <FaCog aria-label="Settings" style={{ verticalAlign: 'middle' }} />
+                        </NavBtnLink>
+                    </NavBtn>
+                    <NavBtn aria-label="Profile">
+                        <NavBtnLink aria-label="Profile" to="/profile" onClick={close}>
+                            <FaUser aria-label="Profile" style={{ verticalAlign: 'middle' }} />
+                        </NavBtnLink>
+                    </NavBtn>
+                    <NavBtn aria-label="Logout">
+                        <NavBtnLink aria-label="Logout" to="/logout" onClick={close}>
+                            <FaSignOutAlt aria-label="Logout" style={{ verticalAlign: 'middle' }} />
+                        </NavBtnLink>
+                    </NavBtn>
+                </NavEnd>
             </Nav>
         </>
     );

@@ -19,7 +19,7 @@ export const NavLink = styled(RouterLink).attrs({
     className: ({ isActive }: { isActive: boolean }) =>
         isActive ? 'active' : '',
 })`
-    color: var(--foreground-color);
+    color: var(--text-color);
     display: flex;
     align-items: center;
     text-decoration: none;
@@ -35,9 +35,11 @@ export const NavLink = styled(RouterLink).attrs({
 /* Mobile menu icon */
 export const Bars = styled(FaBars)`
     display: none;
-    color: #cccbcbff;
+    color: var(--text-color);
+    border-radius: 4px;
 
     @media screen and (max-width: 768px) {
+        padding: 2px 10px;
         display: block;
         position: absolute;
         top: 0;
@@ -45,6 +47,10 @@ export const Bars = styled(FaBars)`
         transform: translate(-100%, 75%);
         font-size: 1rem;
         cursor: pointer;
+        &:hover {
+            background: #ffffff;
+            color: #808080;
+        }
     }
 `;
 
@@ -59,8 +65,7 @@ export const NavMenu = styled.div<{ $isOpen?: boolean }>`
         position: absolute;
         top: 38px;
         left: 0;
-        right: 0;
-        background: var(--background-color);
+        background: var(--nav-color);
         flex-direction: column;
         align-items: flex-start;
         padding: 8px 0;
@@ -68,28 +73,35 @@ export const NavMenu = styled.div<{ $isOpen?: boolean }>`
     }
 `;
 
-/* Button container */
-export const NavBtn = styled.nav`
+export const NavEnd = styled.div`
     display: flex;
-    margin-right: 24px;
-
+    margin-right: 0.25rem;
+    margin-left: 0.25rem;
     @media screen and (max-width: 768px) {
-        display: none;
+        flex-direction: row-reverse;
     }
 `;
 
+/* Button container */
+export const NavBtn = styled.nav`
+    display: flex;
+    margin-right: 1rem;
+`;
+
 /* Button link */
-export const NavBtnLink = styled(RouterLink)<NavLinkProps>`
+export const NavBtnLink = styled(RouterLink) <NavLinkProps>`
     border-radius: 4px;
-    background: #808080;
     padding: 2px 10px;
-    color: #000000;
+    color: var(--text-color);
     outline: none;
     border: none;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     text-decoration: none;
 
+    &:focus {
+        outline: 2px solid white;
+    }
     &:hover {
         background: #ffffff;
         color: #808080;

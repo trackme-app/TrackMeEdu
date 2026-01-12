@@ -8,27 +8,126 @@
   <title>TME</title>
   <script>
     (function () {
+      document.documentElement.classList.add('loading');
       const savedTheme = localStorage.getItem('theme');
       const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       const theme = savedTheme ? savedTheme : (prefersDark ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', theme);
+
+      // Extract tenant name from subdomain or use 'default'
+      const hostname = window.location.hostname;
+      let tenantName;
+      if (hostname.endsWith('.track-me.app')) {
+        tenantName = hostname.split('.')[0];
+      } else {
+        tenantName = 'test';
+      }
+
+      async function applyColorScheme() {
+        try {
+          // 1. Get tenant ID by name
+          const tenantResponse = await fetch(`/api/v1/tenant?tenant_name=${tenantName}`);
+          if (!tenantResponse.ok) throw new Error('Failed to fetch tenant');
+          const tenantData = await tenantResponse.json();
+          const tenantId = tenantData.id;
+
+          if (!tenantId) throw new Error('Tenant ID not found');
+
+          // 2. Get colour scheme for the tenant
+          const colourResponse = await fetch(`/api/v1/tenant/${tenantId}/colour-scheme`);
+          if (!colourResponse.ok) throw new Error('Failed to fetch colour scheme');
+          const colourScheme = await colourResponse.json();
+
+          // 3. Apply styles based on theme
+          const root = document.documentElement;
+
+          if (colourScheme) {
+            // Light mode
+            root.style.setProperty('--bg-color-light', colourScheme.background_lightmode || '%VITE_BACKGROUND_COLOUR_LIGHTMODE%');
+            root.style.setProperty('--text-color-light', colourScheme.foreground_lightmode || '%VITE_FOREGROUND_COLOUR_LIGHTMODE%');
+            root.style.setProperty('--button-bg-light', colourScheme.alt_lightmode || '%VITE_ALT_COLOUR_LIGHTMODE%');
+            root.style.setProperty('--button-border-light', colourScheme.border_lightmode || '%VITE_BORDER_COLOUR_LIGHTMODE%');
+            root.style.setProperty('--nav-color-light', colourScheme.nav_lightmode || '%VITE_NAV_COLOUR_LIGHTMODE%');
+
+            // Dark mode
+            root.style.setProperty('--bg-color-dark', colourScheme.background_darkmode || '%VITE_BACKGROUND_COLOUR_DARKMODE%');
+            root.style.setProperty('--text-color-dark', colourScheme.foreground_darkmode || '%VITE_FOREGROUND_COLOUR_DARKMODE%');
+            root.style.setProperty('--button-bg-dark', colourScheme.alt_darkmode || '%VITE_ALT_COLOUR_DARKMODE%');
+            root.style.setProperty('--button-border-dark', colourScheme.border_darkmode || '%VITE_BORDER_COLOUR_DARKMODE%');
+            root.style.setProperty('--nav-color-dark', colourScheme.nav_darkmode || '%VITE_NAV_COLOUR_DARKMODE%');
+
+            root.style.setProperty('--button-color-pos-light', colourScheme.button_color_pos_lightmode || '%VITE_BUTTON_COLOUR_POSITIVE_LIGHTMODE%');
+            root.style.setProperty('--button-color-pos-dark', colourScheme.button_color_pos_darkmode || '%VITE_BUTTON_COLOUR_POSITIVE_DARKMODE%');
+            root.style.setProperty('--button-color-neg-light', colourScheme.button_color_neg_lightmode || '%VITE_BUTTON_COLOUR_NEGATIVE_LIGHTMODE%');
+            root.style.setProperty('--button-color-neg-dark', colourScheme.button_color_neg_darkmode || '%VITE_BUTTON_COLOUR_NEGATIVE_DARKMODE%');
+          }
+        } catch (error) {
+          console.error('Error loading dynamic colour scheme:', error);
+        } finally {
+          document.documentElement.classList.remove('loading');
+        }
+      }
+
+      applyColorScheme();
     })();
   </script>
   <style>
+    /* Prevent Flash of Unstyled Content (FOUC) */
+    html.loading {
+      background-color: #ffffff;
+      /* Fallback white for light mode */
+      visibility: hidden;
+    }
+
+    html.loading[data-theme='dark'] {
+      background-color: #242424;
+      /* Fallback for dark mode */
+    }
+
+    html.loading * {
+      transition: none !important;
+    }
+
+    html.loading body {
+      display: none !important;
+    }
+
     :root {
-      --bg-color: %VITE_BACKGROUND_COLOUR_LIGHTMODE%;
-      --text-color: %VITE_FOREGROUND_COLOUR_LIGHTMODE%;
-      --button-bg: %VITE_ALT_COLOUR_LIGHTMODE%;
-      --button-border: %VITE_BORDER_COLOUR_LIGHTMODE%;
-      --nav-color: %VITE_NAV_COLOUR_LIGHTMODE%;
+      /* Dynamic properties with fallback to injected env vars */
+      --bg-color-light: %VITE_BACKGROUND_COLOUR_LIGHTMODE%;
+      --text-color-light: %VITE_FOREGROUND_COLOUR_LIGHTMODE%;
+      --button-bg-light: %VITE_ALT_COLOUR_LIGHTMODE%;
+      --button-border-light: %VITE_BORDER_COLOUR_LIGHTMODE%;
+      --nav-color-light: %VITE_NAV_COLOUR_LIGHTMODE%;
+      --button-color-pos-light: %VITE_BUTTON_COLOR_POSITIVE_LIGHTMODE%;
+      --button-color-neg-light: %VITE_BUTTON_COLOR_NEGATIVE_LIGHTMODE%;
+
+      --bg-color-dark: %VITE_BACKGROUND_COLOUR_DARKMODE%;
+      --text-color-dark: %VITE_FOREGROUND_COLOUR_DARKMODE%;
+      --button-bg-dark: %VITE_ALT_COLOUR_DARKMODE%;
+      --button-border-dark: %VITE_BORDER_COLOUR_DARKMODE%;
+      --nav-color-dark: %VITE_NAV_COLOUR_DARKMODE%;
+      --button-color-pos-dark: %VITE_BUTTON_COLOR_POSITIVE_DARKMODE%;
+      --button-color-neg-dark: %VITE_BUTTON_COLOR_NEGATIVE_DARKMODE%;
+
+      /* Map to active variables */
+      --bg-color: var(--bg-color-light);
+      --text-color: var(--text-color-light);
+      --button-bg: var(--button-bg-light);
+      --button-border: var(--button-border-light);
+      --nav-color: var(--nav-color-light);
+      --button-color-pos: var(--button-color-pos-light);
+      --button-color-neg: var(--button-color-neg-light);
     }
 
     [data-theme='dark'] {
-      --bg-color: %VITE_BACKGROUND_COLOUR_DARKMODE%;
-      --text-color: %VITE_FOREGROUND_COLOUR_DARKMODE%;
-      --button-bg: %VITE_ALT_COLOUR_DARKMODE%;
-      --button-border: %VITE_BORDER_COLOUR_DARKMODE%;
-      --nav-color: %VITE_NAV_COLOUR_DARKMODE%;
+      --bg-color: var(--bg-color-dark);
+      --text-color: var(--text-color-dark);
+      --button-bg: var(--button-bg-dark);
+      --button-border: var(--button-border-dark);
+      --nav-color: var(--nav-color-dark);
+      --button-color-pos: var(--button-color-pos-dark);
+      --button-color-neg: var(--button-color-neg-dark);
     }
   </style>
 </head>

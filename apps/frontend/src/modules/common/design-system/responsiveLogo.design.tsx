@@ -11,6 +11,7 @@ export default function ResponsiveLogo() {
         width: 'auto',
         display: 'inline-block',
         verticalAlign: 'middle',
+        marginRight: '1.5rem',
     };
 
     const colorSuffix = isDark ? 'White' : 'Black';
@@ -23,16 +24,13 @@ export default function ResponsiveLogo() {
                 .responsive-logo-wrapper { display: inline-block; }
                 .responsive-picture { display: inline-block; }
                 .responsive-picture img { height: 2em; max-height: 2.5rem; width: auto; }
-                .responsive-home { display: none; font-size: 1rem; font-weight: 600; }
 
                 @media (max-width: 767px) {
                   .responsive-picture { display: none; }
-                  .responsive-home { display: inline-block; }
                 }
 
                 @media (min-width: 768px) {
                   .responsive-picture { display: inline-block; }
-                  .responsive-home { display: none; }
                 }
             `}</style>
 
@@ -42,7 +40,6 @@ export default function ResponsiveLogo() {
                     <source media="(max-width: 999px)" srcSet={logoSmall} />
                     <img src={logoSmall} alt="TME logo" style={picStyle} />
                 </picture>
-                <span className="responsive-home">Home</span>
             </span>
         </>
     );

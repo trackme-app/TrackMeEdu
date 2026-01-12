@@ -84,10 +84,9 @@ export default function Modal({
                         aria-label="Confirm"
                         style={{
                             padding: '8px 12px',
-                            background: '#ef4444',
+                            background: 'var(--button-color-neg)',
                             color: 'white',
                             border: 'none',
-                            borderRadius: 4,
                         }}
                     >
                         {confirmText}

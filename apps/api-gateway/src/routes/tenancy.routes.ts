@@ -28,11 +28,20 @@ router.get('/health', async (req: Request, res: Response) => {
 });
 
 router.get('/', async (req: Request, res: Response) => {
-    try {
-        const tenants = await tenancyClient.getTenants(req.headers.authorization as string);
-        res.status(200).json(tenants);
-    } catch (err: any) {
-        handleRouteError(err, res, 'GET /');
+    if (req.query.tenant_name) {
+        try {
+            const tenant = await tenancyClient.getTenantByName(req.query.tenant_name as string, req.headers.authorization as string);
+            res.status(200).json(tenant);
+        } catch (err: any) {
+            handleRouteError(err, res, 'GET /');
+        }
+    } else {
+        try {
+            const tenants = await tenancyClient.getTenants(req.headers.authorization as string);
+            res.status(200).json(tenants);
+        } catch (err: any) {
+            handleRouteError(err, res, 'GET /');
+        }
     }
 });
 
