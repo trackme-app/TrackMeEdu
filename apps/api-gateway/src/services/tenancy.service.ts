@@ -1,15 +1,15 @@
 import axios, { AxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
-import { Course } from "@tme/shared-types";
+import { ColourScheme, Tenant, TenantSettings } from "@tme/shared-types";
 import logger from "../logger/logger";
 
-const BASE_URL = process.env.COURSE_SERVICE_URL || "http://worker-courseandcurriculum:3000/api/v1/course";
+const BASE_URL = process.env.TENANCY_SERVICE_URL || "http://worker-tenancy:3000/api/v1/tenant";
 
-interface courseHealth {
+interface tenancyHealth {
     status: string;
 }
 
-export class CourseClient {
+export class TenancyClient {
     private baseUrl: string;
     private axiosInstance: AxiosInstance;
 
@@ -30,7 +30,7 @@ export class CourseClient {
         if (error.statusCode >= 500) {
             logger.error({
                 "dt": Date(),
-                "service": "Gateway.CourseClient",
+                "service": "Gateway.TenancyClient",
                 "context": context,
                 "message": error.message,
                 "httpStatus": error.statusCode,
@@ -39,7 +39,7 @@ export class CourseClient {
         } else {
             logger.warn({
                 "dt": Date(),
-                "service": "Gateway.CourseClient",
+                "service": "Gateway.TenancyClient",
                 "context": context,
                 "message": error.message,
                 "httpStatus": error.statusCode,
@@ -66,141 +66,104 @@ export class CourseClient {
         };
     }
 
-    async getCourseHealth(tenantId: string, authToken?: string): Promise<courseHealth> {
+    async getTenantHealth(authToken?: string): Promise<tenancyHealth> {
         try {
-            const res = await this.axiosInstance.get<courseHealth>(`${this.baseUrl}/health`, {
+            const res = await this.axiosInstance.get<tenancyHealth>(`${this.baseUrl}/health`, {
                 headers: {
-                    "X-Tenant-Id": tenantId,
                     ...(authToken ? { Authorization: authToken } : {}),
                 }
             });
 
             if (res.status !== 200) {
-                throw {
-                    message: "Health check failed",
-                    tenantId: tenantId,
-                    statusCode: res.status
-                };
+                throw { message: "Health check failed", statusCode: res.status };
             }
             return res.data;
         } catch (error) {
-            this.handleError(error, "getCourseHealth");
+            this.handleError(error, "getTenantHealth");
             throw error; // Re-shadow for TS
         }
     }
 
-    async getCourses(tenantId: string, authToken?: string): Promise<Course[]> {
+    async getTenants(authToken?: string): Promise<Tenant[]> {
         try {
-            const res = await this.axiosInstance.get<Course[] | { error: string }>(`${this.baseUrl}/`, {
+            const res = await this.axiosInstance.get<Tenant[] | { error: string }>(`${this.baseUrl}/`, {
                 headers: {
-                    "X-Tenant-Id": tenantId,
                     ...(authToken ? { Authorization: authToken } : {}),
                 }
             });
 
             if (res.status >= 300) {
                 const data = res.data as { error: string };
-                throw {
-                    message: data.error || "Failed to fetch courses",
-                    tenantId: tenantId,
-                    statusCode: res.status
-                };
+                throw { message: data.error || "Failed to fetch tenants", statusCode: res.status };
             }
-            return res.data as Course[];
+            return res.data as Tenant[];
         } catch (error) {
-            this.handleError(error, "getCourses");
+            this.handleError(error, "getTenants");
             throw error;
         }
     }
 
-    async getCourseById(tenantId: string, id: string, authToken?: string): Promise<Course> {
+    async getTenantSettings(id: string, authToken?: string): Promise<TenantSettings> {
         try {
-            const res = await this.axiosInstance.get<Course | { error: string }>(`${this.baseUrl}/${id}`, {
+            const res = await this.axiosInstance.get<TenantSettings | { error: string }>(`${this.baseUrl}/${id}/settings`, {
                 headers: {
-                    "X-Tenant-Id": tenantId,
                     ...(authToken ? { Authorization: authToken } : {}),
                 }
             });
 
             if (res.status >= 300) {
                 const data = res.data as { error: string };
-                throw {
-                    message: data.error || "Course not found",
-                    tenantId: tenantId,
-                    statusCode: res.status
-                };
+                throw { message: data.error || "Tenant settings not found", statusCode: res.status };
             }
-            return res.data as Course;
+            return res.data as TenantSettings;
         } catch (error) {
-            this.handleError(error, "getCourseById");
+            this.handleError(error, "getTenantSettings");
             throw error;
         }
     }
 
-    async insertCourse(tenantId: string, course: Course, authToken?: string): Promise<Course> {
+    async getTenantColourScheme(id: string, authToken?: string): Promise<ColourScheme> {
         try {
-            const res = await this.axiosInstance.post<Course | { error: string }>(`${this.baseUrl}/`, course, {
+            const res = await this.axiosInstance.get<ColourScheme | { error: string }>(`${this.baseUrl}/${id}/colour-scheme`, {
                 headers: {
-                    "X-Tenant-Id": tenantId,
                     ...(authToken ? { Authorization: authToken } : {}),
                 }
             });
 
             if (res.status >= 300) {
                 const data = res.data as { error: string };
-                throw {
-                    message: data.error || "Failed to create course",
-                    tenantId: tenantId,
-                    statusCode: res.status
-                };
+                throw { message: data.error || "Tenant colour scheme not found", statusCode: res.status };
             }
-
-            logger.info({
-                "dt": Date(),
-                "service": "Gateway.CourseClient",
-                "context": "insertCourse",
-                "message": "Course created successfully",
-                "httpStatus": res.status,
-                "tenantId": tenantId
-            });
-
-            return res.data as Course;
+            return res.data as ColourScheme;
         } catch (error) {
-            this.handleError(error, "insertCourse");
+            this.handleError(error, "getTenantColourScheme");
             throw error;
         }
     }
 
-    async updateCourse(tenantId: string, id: string, course: Course, authToken?: string): Promise<Course> {
+    async getTenantById(id: string, authToken?: string): Promise<Tenant> {
         try {
-            const res = await this.axiosInstance.put<Course | { error: string }>(`${this.baseUrl}/${id}`, course, {
+            const res = await this.axiosInstance.get<Tenant | { error: string }>(`${this.baseUrl}/${id}`, {
                 headers: {
-                    "X-Tenant-Id": tenantId,
                     ...(authToken ? { Authorization: authToken } : {}),
                 }
             });
 
             if (res.status >= 300) {
                 const data = res.data as { error: string };
-                throw {
-                    message: data.error || "Failed to update course",
-                    tenantId: tenantId,
-                    statusCode: res.status
-                };
+                throw { message: data.error || "Tenant not found", statusCode: res.status };
             }
-
-            return res.data as Course;
+            return res.data as Tenant;
         } catch (error) {
-            this.handleError(error, "updateCourse");
+            this.handleError(error, "getTenantById");
             throw error;
         }
     }
 
-    async deleteCourse(tenantId: string, id: string, authToken?: string): Promise<Course> {
+    async insertTenant(tenant: Tenant, authToken?: string): Promise<Tenant> {
         try {
-            const res = await this.axiosInstance.delete<Course | { error: string }>(`${this.baseUrl}/${id}`, {
+            const res = await this.axiosInstance.post<Tenant | { error: string }>(`${this.baseUrl}/`, tenant, {
                 headers: {
-                    "X-Tenant-Id": tenantId,
                     ...(authToken ? { Authorization: authToken } : {}),
                 }
             });
@@ -208,18 +171,61 @@ export class CourseClient {
             if (res.status >= 300) {
                 const data = res.data as { error: string };
                 throw {
-                    message: data.error || "Failed to delete course",
-                    tenantId: tenantId,
+                    message: data.error || "Failed to create tenant",
                     statusCode: res.status
                 };
             }
 
-            return res.data as Course;
+            return res.data as Tenant;
         } catch (error) {
-            this.handleError(error, "deleteCourse");
+            this.handleError(error, "insertTenant");
+            throw error;
+        }
+    }
+
+    async updateTenant(id: string, tenant: Tenant, authToken?: string): Promise<Tenant> {
+        try {
+            const res = await this.axiosInstance.put<Tenant | { error: string }>(`${this.baseUrl}/${id}`, tenant, {
+                headers: {
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw {
+                    message: data.error || "Failed to update tenant",
+                    statusCode: res.status
+                };
+            }
+
+            return res.data as Tenant;
+        } catch (error) {
+            this.handleError(error, "updateTenant");
+            throw error;
+        }
+    }
+
+    async deleteTenant(id: string, authToken?: string): Promise<Tenant> {
+        try {
+            const res = await this.axiosInstance.delete<Tenant | { error: string }>(`${this.baseUrl}/${id}`, {
+                headers: {
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw {
+                    message: data.error || "Failed to delete tenant",
+                    statusCode: res.status
+                };
+            }
+
+            return res.data as Tenant;
+        } catch (error) {
+            this.handleError(error, "deleteTenant");
             throw error;
         }
     }
 }
-
-
