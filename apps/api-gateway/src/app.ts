@@ -3,10 +3,18 @@ import dummyRoutes from './routes/dummy.routes';
 import healthRoutes from './routes/health.routes';
 import courseRoutes from './routes/course.routes';
 import tenancyRoutes from './routes/tenancy.routes';
+import { idempotencyMiddleware } from './middleware/idempotency.middleware';
 
 const app = express();
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+    if (req.method === "POST") {
+        return idempotencyMiddleware(req, res, next);
+    }
+    next();
+});
 
 // Routes
 app.use('/api/v1/health', healthRoutes);
