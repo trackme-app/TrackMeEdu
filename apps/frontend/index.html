@@ -17,7 +17,7 @@
       // Extract tenant name from subdomain or use 'default'
       const hostname = window.location.hostname;
       let tenantName;
-      if (hostname.endsWith('.track-me.app')) {
+      if (hostname.endsWith('.track-me.app') || hostname.endsWith('%LOCAL_DOMAIN%')) {
         tenantName = hostname.split('.')[0];
       } else {
         tenantName = 'test';
@@ -99,16 +99,16 @@
       --button-bg-light: %VITE_ALT_COLOUR_LIGHTMODE%;
       --button-border-light: %VITE_BORDER_COLOUR_LIGHTMODE%;
       --nav-color-light: %VITE_NAV_COLOUR_LIGHTMODE%;
-      --button-color-pos-light: %VITE_BUTTON_COLOR_POSITIVE_LIGHTMODE%;
-      --button-color-neg-light: %VITE_BUTTON_COLOR_NEGATIVE_LIGHTMODE%;
+      --button-color-pos-light: %VITE_BUTTON_COLOUR_POSITIVE_LIGHTMODE%;
+      --button-color-neg-light: %VITE_BUTTON_COLOUR_NEGATIVE_LIGHTMODE%;
 
       --bg-color-dark: %VITE_BACKGROUND_COLOUR_DARKMODE%;
       --text-color-dark: %VITE_FOREGROUND_COLOUR_DARKMODE%;
       --button-bg-dark: %VITE_ALT_COLOUR_DARKMODE%;
       --button-border-dark: %VITE_BORDER_COLOUR_DARKMODE%;
       --nav-color-dark: %VITE_NAV_COLOUR_DARKMODE%;
-      --button-color-pos-dark: %VITE_BUTTON_COLOR_POSITIVE_DARKMODE%;
-      --button-color-neg-dark: %VITE_BUTTON_COLOR_NEGATIVE_DARKMODE%;
+      --button-color-pos-dark: %VITE_BUTTON_COLOUR_POSITIVE_DARKMODE%;
+      --button-color-neg-dark: %VITE_BUTTON_COLOUR_NEGATIVE_DARKMODE%;
 
       /* Map to active variables */
       --bg-color: var(--bg-color-light);
