@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
-import logger from "../logger/logger";
+import logger from "../helpers/logger";
 
 const BASE_URL = process.env.DUMMY_SERVICE_URL || "http://zzdummyservice:3000/api/v1/dummy";
 

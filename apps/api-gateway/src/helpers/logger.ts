@@ -19,6 +19,11 @@ const transport = pino.transport({
         }
     ],
 });
-const logger = pino({ level: process.env.LOG_LEVEL || "warn" }, transport);
+const logger = pino(
+    {
+        level: process.env.LOG_LEVEL || "warn"
+    },
+    transport
+);
 
 export default logger;

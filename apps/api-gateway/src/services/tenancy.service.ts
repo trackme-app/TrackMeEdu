@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
 import { ColourScheme, Tenant, TenantSettings } from "@tme/shared-types";
-import logger from "../logger/logger";
+import logger from "../helpers/logger";
 
 const BASE_URL = process.env.TENANCY_SERVICE_URL || "http://worker-tenancy:3000/api/v1/tenant";
 
