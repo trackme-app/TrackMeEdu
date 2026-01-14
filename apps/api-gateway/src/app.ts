@@ -4,7 +4,7 @@ import healthRoutes from './routes/health.routes';
 import courseRoutes from './routes/course.routes';
 import tenancyRoutes from './routes/tenancy.routes';
 import userRoutes from './routes/user.routes';
-import { idempotencyMiddleware } from './middleware/idempotency.middleware';
+import { idempotencyMiddleware, tenancyMiddleware } from './middleware/idempotency.middleware';
 
 const app = express();
 
