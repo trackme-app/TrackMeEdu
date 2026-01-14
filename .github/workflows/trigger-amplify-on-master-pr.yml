@@ -43,4 +43,4 @@ jobs:
               "pull_request": "${{ github.event.pull_request.number }}",
               "branch": "${{ github.base_ref }}"
             }' \
-            ${AMPLIFY_WEBHOOK_URL}
+            ${{ env.AMPLIFY_WEBHOOK_URL }}
