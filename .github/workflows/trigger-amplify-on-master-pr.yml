@@ -1,0 +1,46 @@
+name: Trigger Amplify deployment on PR to master
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  check-folder-and-trigger:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if apps/ui folder was modified
+        id: folder_check
+        run: |
+          TARGET_FOLDER="apps/ui/"
+
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          if echo "$CHANGED_FILES" | grep -q "^$TARGET_FOLDER"; then
+            echo "folder_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "folder_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger webhook
+        if: steps.folder_check.outputs.folder_changed == 'true'
+        env:
+          AMPLIFY_WEBHOOK_URL: ${{ secrets.AMPLIFY_WEBHOOK_URL }}
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{
+              "repository": "${{ github.repository }}",
+              "pull_request": "${{ github.event.pull_request.number }}",
+              "branch": "${{ github.base_ref }}"
+            }' \
+            ${AMPLIFY_WEBHOOK_URL}
