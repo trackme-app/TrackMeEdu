@@ -15,10 +15,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check if apps/ui folder was modified
+      - name: Check if apps/frontend folder was modified
         id: folder_check
         run: |
-          TARGET_FOLDER="apps/ui/"
+          TARGET_FOLDER="apps/frontend/"
 
           CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
 
