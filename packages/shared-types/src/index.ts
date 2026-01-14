@@ -3,3 +3,8 @@ export * from './auth.type';
 export * from './auth.guard';
 export * from './course.type';
 export * from './serviceResponse.type';
+export * from './tenant.type';
+export * from './tenantSettings.type';
+export * from './colourScheme.type';
+export * from './user.type';
+export * from './oauthIdentity.type';

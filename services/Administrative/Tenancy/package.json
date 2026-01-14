@@ -1,0 +1,26 @@
+{
+  "name": "@tme/tenancy",
+  "version": "1.0.0",
+  "description": "The Tenancy Service is the central registry for all tenancy data. It acts as the single source of truth for tenancy information in the Education Management System.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
+    "start": "node dist/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.965.0",
+    "@aws-sdk/lib-dynamodb": "^3.965.0",
+    "@types/express": "^5.0.6",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "nodejs": "^0.0.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2"
+  }
+}

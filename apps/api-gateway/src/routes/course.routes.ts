@@ -14,9 +14,6 @@ const handleRouteError = (err: any, res: Response, context: string) => {
     const statusCode = err.statusCode || 500;
     const errorMessage = err.message || 'Internal server error';
 
-    // Log for debugging inside the container
-    console.error(`[API Gateway Route][${context}] Error:`, { statusCode, errorMessage });
-
     // Send clean response to user - NO stack trace
     res.status(statusCode).json({ error: errorMessage });
 };

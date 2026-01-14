@@ -19,13 +19,16 @@ locals {
     "Applications",
     "AdmissionDocuments",
     "Users",
+    "UserRoles",
     "Roles",
+    "RolePermissions",
     "Permissions",
     "AuditLogs",
     "StaffProfiles",
     "EmploymentContracts",
     "StudentProfiles",
     "AcademicHistory",
+    "UserGuardians",
     "Guardians",
 
     # Operations & Communication Domain
@@ -67,6 +70,25 @@ resource "aws_dynamodb_table" "tables" {
   }
   
   # Destroy table on terraform destroy
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
+resource "aws_dynamodb_table" "tenants" {
+  name           = "Tenants"
+  billing_mode   = "PAY_PER_REQUEST"
+  hash_key       = "id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+
+  tags = {
+    Environment = "local"
+  }
+
   lifecycle {
     prevent_destroy = false
   }

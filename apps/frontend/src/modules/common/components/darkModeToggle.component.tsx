@@ -14,8 +14,8 @@ const DarkModeToggle: FC = () => {
         width: '40px',
         height: '18px',
         borderRadius: '999px',
-        backgroundColor: isDark ? '#334155' : '#e5e7eb',
-        border: 'none',
+        border: '1px solid black',
+        backgroundColor: 'var(--bg-color)',
         cursor: 'pointer',
         transition: 'background-color 200ms ease',
         zIndex: 9999,
@@ -41,6 +41,7 @@ const DarkModeToggle: FC = () => {
             role="switch"
             aria-checked={isDark}
             aria-label="Toggle dark mode"
+            aria-roledescription="Dark mode toggle"
             onClick={toggleTheme}
             style={darkModeToggleButtonStyle}
         >
