@@ -3,7 +3,7 @@ import { type FC } from 'react';
 export const HomeFrame: FC = () => {
     return (
         <>
-            <h1>Home</h1>
+            <h1>Home Page</h1>
         </>
     );
 };
