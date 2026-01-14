@@ -17,7 +17,7 @@ export const FooterFrame: FC = () => {
     };
 
     return (
-        <div style={footerStyle}>
+        <div role="complementary" aria-label="Footer" style={footerStyle}>
             <Copyright />
             <DarkModeToggle />
         </div>

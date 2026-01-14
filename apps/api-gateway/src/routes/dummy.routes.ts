@@ -13,8 +13,6 @@ const handleRouteError = (err: any, res: Response, context: string) => {
     const statusCode = err.statusCode || 500;
     const errorMessage = err.message || 'Internal server error';
 
-    console.error(`[API Gateway Route][${context}] Error:`, { statusCode, errorMessage });
-
     res.status(statusCode).json({ error: errorMessage });
 };
 

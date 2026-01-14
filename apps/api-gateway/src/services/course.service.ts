@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
 import { Course } from "@tme/shared-types";
+import logger from "../helpers/logger";
 
 const BASE_URL = process.env.COURSE_SERVICE_URL || "http://worker-courseandcurriculum:3000/api/v1/course";
 
@@ -26,7 +27,25 @@ export class CourseClient {
     }
 
     private handleError(error: any, context: string) {
-        console.error(`[CourseClient][${context}] Error:`, error);
+        if (error.statusCode >= 500) {
+            logger.error({
+                "dt": Date(),
+                "service": "Gateway.CourseClient",
+                "context": context,
+                "message": error.message,
+                "httpStatus": error.statusCode,
+                "tenantId": error.tenantId
+            });
+        } else {
+            logger.warn({
+                "dt": Date(),
+                "service": "Gateway.CourseClient",
+                "context": context,
+                "message": error.message,
+                "httpStatus": error.statusCode,
+                "tenantId": error.tenantId
+            });
+        }
 
         // If it's already a clean error we threw manually
         if (error && error.statusCode && error.message) {
@@ -57,7 +76,11 @@ export class CourseClient {
             });
 
             if (res.status !== 200) {
-                throw { message: "Health check failed", statusCode: res.status };
+                throw {
+                    message: "Health check failed",
+                    tenantId: tenantId,
+                    statusCode: res.status
+                };
             }
             return res.data;
         } catch (error) {
@@ -77,7 +100,11 @@ export class CourseClient {
 
             if (res.status >= 300) {
                 const data = res.data as { error: string };
-                throw { message: data.error || "Failed to fetch courses", statusCode: res.status };
+                throw {
+                    message: data.error || "Failed to fetch courses",
+                    tenantId: tenantId,
+                    statusCode: res.status
+                };
             }
             return res.data as Course[];
         } catch (error) {
@@ -97,7 +124,11 @@ export class CourseClient {
 
             if (res.status >= 300) {
                 const data = res.data as { error: string };
-                throw { message: data.error || "Course not found", statusCode: res.status };
+                throw {
+                    message: data.error || "Course not found",
+                    tenantId: tenantId,
+                    statusCode: res.status
+                };
             }
             return res.data as Course;
         } catch (error) {
@@ -119,9 +150,19 @@ export class CourseClient {
                 const data = res.data as { error: string };
                 throw {
                     message: data.error || "Failed to create course",
+                    tenantId: tenantId,
                     statusCode: res.status
                 };
             }
+
+            logger.info({
+                "dt": Date(),
+                "service": "Gateway.CourseClient",
+                "context": "insertCourse",
+                "message": "Course created successfully",
+                "httpStatus": res.status,
+                "tenantId": tenantId
+            });
 
             return res.data as Course;
         } catch (error) {
@@ -143,6 +184,7 @@ export class CourseClient {
                 const data = res.data as { error: string };
                 throw {
                     message: data.error || "Failed to update course",
+                    tenantId: tenantId,
                     statusCode: res.status
                 };
             }
@@ -167,6 +209,7 @@ export class CourseClient {
                 const data = res.data as { error: string };
                 throw {
                     message: data.error || "Failed to delete course",
+                    tenantId: tenantId,
                     statusCode: res.status
                 };
             }

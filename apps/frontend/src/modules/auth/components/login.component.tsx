@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../common/services/auth/authProvider';
-import { useTheme } from '../../common/design-system/themeContext';
 
 export const Login: React.FC = () => {
     const [formData, setFormData] = useState({ username: '', password: '' });
@@ -43,31 +42,23 @@ export const Login: React.FC = () => {
         }
     };
 
-    const { theme } = useTheme();
-    const isDark = theme === 'dark';
-
     const containerStyle: React.CSSProperties = {
         padding: 24,
         maxWidth: 420,
         margin: '40px auto',
-        //background: isDark ? process.env.REACT_APP_DM_ALT_BACKGROUND : process.env.REACT_APP_LM_ALT_BACKGROUND,
-        color: isDark ? '#e6eef8' : '#0b1220',
+        color: 'var(--text-color)',
         borderRadius: 8,
-        boxShadow: isDark
-            ? '0 6px 20px rgba(2,6,23,0.6)'
-            : '0 6px 20px rgba(2,6,23,0.08)',
+        boxShadow: '0 6px 20px rgba(2,6,23,0.6)',
+        backgroundColor: 'var(--nav-color)',
     };
 
     const inputStyle: React.CSSProperties = {
         width: '90%',
         padding: '10px 12px',
         borderRadius: 6,
-        border: isDark
-            ? '1px solid rgba(255,255,255,0.08)'
-            : '1px solid rgba(2,6,23,0.08)',
-        background: isDark ? '#0b1220' : '#fff',
-        color: isDark ? '#e6eef8' : '#0b1220',
-        boxShadow: isDark ? 'inset 0 1px 0 rgba(255,255,255,0.02)' : 'none',
+        border: 'var(--bg-color)',
+        background: 'var(--bg-color)',
+        color: 'var(--text-color)',
         fontSize: 14,
     };
 
@@ -76,11 +67,12 @@ export const Login: React.FC = () => {
         padding: '10px 14px',
         borderRadius: 8,
         border: 'none',
-        //background: isDark ? process.env.REACT_APP_DM_MAIN_BUTTON_POS : process.env.REACT_APP_LM_MAIN_BUTTON_POS,
-        color: '#fff',
+        color: 'var(--text-color)',
         fontWeight: 600,
-        cursor: 'pointer',
         marginTop: 8,
+        backgroundColor: 'var(--button-color-pos)',
+        opacity: isButtonDisabled ? 0.5 : 1,
+        cursor: isButtonDisabled ? 'not-allowed' : 'pointer',
     };
 
     return (
@@ -127,7 +119,7 @@ export const Login: React.FC = () => {
                         />
                     </div>
                     {error && (
-                        <div style={{ color: '#ff6b6b', marginBottom: 8 }}>
+                        <div style={{ color: 'var(--button-color-neg)', marginBottom: 8 }}>
                             {error}
                         </div>
                     )}

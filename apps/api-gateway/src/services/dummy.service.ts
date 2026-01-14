@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
+import logger from "../helpers/logger";
 
 const BASE_URL = process.env.DUMMY_SERVICE_URL || "http://zzdummyservice:3000/api/v1/dummy";
 
@@ -32,7 +33,25 @@ export class DummyClient {
     }
 
     private handleError(error: any, context: string) {
-        console.error(`[DummyClient][${context}] Error:`, error);
+        if (error.statusCode >= 500) {
+            logger.error({
+                "dt": Date(),
+                "service": "Gateway.DummyClient",
+                "context": context,
+                "message": error.message,
+                "httpStatus": error.statusCode,
+                "tenantId": error.tenantId
+            });
+        } else {
+            logger.warn({
+                "dt": Date(),
+                "service": "Gateway.DummyClient",
+                "context": context,
+                "message": error.message,
+                "httpStatus": error.statusCode,
+                "tenantId": error.tenantId
+            });
+        }
 
         if (error && error.statusCode && error.message) {
             throw error;
