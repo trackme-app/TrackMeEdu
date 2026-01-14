@@ -6,3 +6,5 @@ export * from './serviceResponse.type';
 export * from './tenant.type';
 export * from './tenantSettings.type';
 export * from './colourScheme.type';
+export * from './user.type';
+export * from './oauthIdentity.type';

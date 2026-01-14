@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
+import { User } from "@tme/shared-types";
 import logger from "../helpers/logger";
 
 const BASE_URL = process.env.USER_SERVICE_URL || "http://worker-iam:3000/api/v1/user";
@@ -85,6 +86,161 @@ export class UserClient {
         } catch (error) {
             this.handleError(error, "getUserHealth");
             throw error; // Re-shadow for TS
+        }
+    }
+
+    async getUsers(tenantId: string, authToken?: string): Promise<User[]> {
+        try {
+            const res = await this.axiosInstance.get<User[]>(`${this.baseUrl}/`, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status !== 200) {
+                throw {
+                    message: "User not found",
+                    tenantId: tenantId,
+                    statusCode: res.status
+                };
+            }
+            return res.data;
+        } catch (error) {
+            this.handleError(error, "getUsers");
+            throw error; // Re-shadow for TS
+        }
+    }
+
+    async getUserById(tenantId: string, userId: string, authToken?: string): Promise<User> {
+        try {
+            const res = await this.axiosInstance.get<User>(`${this.baseUrl}/${userId}`, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status !== 200) {
+                throw {
+                    message: "User not found",
+                    tenantId: tenantId,
+                    statusCode: res.status
+                };
+            }
+            return res.data;
+        } catch (error) {
+            this.handleError(error, "getUserById");
+            throw error; // Re-shadow for TS
+        }
+    }
+
+    async insertUser(tenantId: string, user: User, authToken?: string): Promise<User> {
+        try {
+            const res = await this.axiosInstance.post<User | { error: string }>(`${this.baseUrl}/`, user, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw {
+                    message: data.error || "Failed to create user",
+                    tenantId: tenantId,
+                    statusCode: res.status
+                };
+            }
+
+            logger.info({
+                "dt": Date(),
+                "service": "Gateway.UserClient",
+                "context": "insertUser",
+                "message": "User created successfully",
+                "httpStatus": res.status,
+                "tenantId": tenantId
+            });
+
+            return res.data as User;
+        } catch (error) {
+            this.handleError(error, "insertUser");
+            throw error;
+        }
+    }
+
+    async updateUser(tenantId: string, id: string, user: User, authToken?: string): Promise<User> {
+        try {
+            const res = await this.axiosInstance.put<User | { error: string }>(`${this.baseUrl}/${id}`, user, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw {
+                    message: data.error || "Failed to update user",
+                    tenantId: tenantId,
+                    statusCode: res.status
+                };
+            }
+
+            return res.data as User;
+        } catch (error) {
+            this.handleError(error, "updateUser");
+            throw error;
+        }
+    }
+
+    async softDeleteUser(tenantId: string, id: string, authToken?: string): Promise<User> {
+        try {
+            const res = await this.axiosInstance.delete<User | { error: string }>(`${this.baseUrl}/soft/${id}`, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw {
+                    message: data.error || "Failed to delete user",
+                    tenantId: tenantId,
+                    statusCode: res.status
+                };
+            }
+
+            return res.data as User;
+        } catch (error) {
+            this.handleError(error, "softDeleteUser");
+            throw error;
+        }
+    }
+
+    async hardDeleteUser(tenantId: string, id: string, authToken?: string): Promise<User> {
+        try {
+            const res = await this.axiosInstance.delete<User | { error: string }>(`${this.baseUrl}/${id}`, {
+                headers: {
+                    "X-Tenant-Id": tenantId,
+                    ...(authToken ? { Authorization: authToken } : {}),
+                }
+            });
+
+            if (res.status >= 300) {
+                const data = res.data as { error: string };
+                throw {
+                    message: data.error || "Failed to delete user",
+                    tenantId: tenantId,
+                    statusCode: res.status
+                };
+            }
+
+            return res.data as User;
+        } catch (error) {
+            this.handleError(error, "hardDeleteUser");
+            throw error;
         }
     }
 }

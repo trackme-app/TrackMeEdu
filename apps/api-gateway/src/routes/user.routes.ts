@@ -26,3 +26,65 @@ router.get('/health', async (req: Request, res: Response) => {
         handleRouteError(err, res, 'GET /health');
     }
 });
+
+router.get('/', async (req: Request, res: Response) => {
+    try {
+        const tenantId = req.headers['x-tenant-id'] as string;
+        const response = await client.getUsers(tenantId, req.headers.authorization as string);
+        res.json(response);
+    } catch (err: any) {
+        handleRouteError(err, res, 'GET /');
+    }
+});
+
+router.get('/:id', async (req: Request, res: Response) => {
+    try {
+        const tenantId = req.headers['x-tenant-id'] as string;
+        const response = await client.getUserById(tenantId, req.params.id, req.headers.authorization as string);
+        res.json(response);
+    } catch (err: any) {
+        handleRouteError(err, res, 'GET /:id');
+    }
+});
+
+router.post('/', async (req: Request, res: Response) => {
+    try {
+        const tenantId = req.headers['x-tenant-id'] as string;
+        const response = await client.insertUser(tenantId, req.body, req.headers.authorization as string);
+        res.json(response);
+    } catch (err: any) {
+        handleRouteError(err, res, 'POST /');
+    }
+});
+
+router.put('/:id', async (req: Request, res: Response) => {
+    try {
+        const tenantId = req.headers['x-tenant-id'] as string;
+        const response = await client.updateUser(tenantId, req.params.id, req.body, req.headers.authorization as string);
+        res.json(response);
+    } catch (err: any) {
+        handleRouteError(err, res, 'PUT /:id');
+    }
+});
+
+router.delete('/soft/:id', async (req: Request, res: Response) => {
+    try {
+        const tenantId = req.headers['x-tenant-id'] as string;
+        const response = await client.softDeleteUser(tenantId, req.params.id, req.headers.authorization as string);
+        res.json(response);
+    } catch (err: any) {
+        handleRouteError(err, res, 'DELETE /soft/:id');
+    }
+});
+
+router.delete('/:id', async (req: Request, res: Response) => {
+    try {
+        const tenantId = req.headers['x-tenant-id'] as string;
+        const response = await client.hardDeleteUser(tenantId, req.params.id, req.headers.authorization as string);
+        res.json(response);
+    } catch (err: any) {
+        handleRouteError(err, res, 'DELETE /:id');
+    }
+});
+
+export default router;
