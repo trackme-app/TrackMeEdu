@@ -19,13 +19,16 @@ locals {
     "Applications",
     "AdmissionDocuments",
     "Users",
+    "UserRoles",
     "Roles",
+    "RolePermissions",
     "Permissions",
     "AuditLogs",
     "StaffProfiles",
     "EmploymentContracts",
     "StudentProfiles",
     "AcademicHistory",
+    "UserGuardians",
     "Guardians",
 
     # Operations & Communication Domain

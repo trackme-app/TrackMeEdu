@@ -3,6 +3,7 @@ import dummyRoutes from './routes/dummy.routes';
 import healthRoutes from './routes/health.routes';
 import courseRoutes from './routes/course.routes';
 import tenancyRoutes from './routes/tenancy.routes';
+import userRoutes from './routes/user.routes';
 import { idempotencyMiddleware, tenancyMiddleware } from './middleware';
 
 const app = express();
@@ -21,6 +22,7 @@ app.use('/api/v1/health', healthRoutes);
 app.use('/api/v1/dummy', dummyRoutes);
 app.use('/api/v1/course', [tenancyMiddleware], courseRoutes);
 app.use('/api/v1/tenant', tenancyRoutes);
+app.use('/api/v1/user', userRoutes);
 
 // Global error handler - catches any unhandled errors
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

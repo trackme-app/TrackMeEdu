@@ -6,13 +6,16 @@
     "services/*",
     "packages/*",
     "services/Academic & Learning/Course & Curriculum",
-    "services/Administrative/Tenancy"
+    "services/Administrative/Tenancy",
+    "services/Administrative/Identity & Access Management"
   ],
   "scripts": {
     "dev": "docker compose -f docker-compose.local.yml up --build",
     "dev:down": "docker compose -f docker-compose.local.yml down --rmi all -v",
     "build": "npm run build --workspaces --if-present",
     "build:shared": "npm run build --workspace @tme/shared-types",
-    "build:apps": "npm run build --workspaces --if-present --include-workspace-root=false"
+    "build:apps": "npm run build --workspaces --if-present --include-workspace-root=false",
+    "terra:build": "terraform -chdir=infra/localstack apply -auto-approve",
+    "terra:destroy": "terraform -chdir=infra/localstack destroy -auto-approve"
   }
 }
