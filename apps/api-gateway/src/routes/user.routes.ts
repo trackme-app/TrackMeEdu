@@ -17,6 +17,20 @@ const handleRouteError = (err: any, res: Response, context: string) => {
     res.status(statusCode).json({ error: errorMessage });
 };
 
+/**
+ * @swagger
+ * /api/v1/user/health:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: User service health check
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     responses:
+ *       200:
+ *         description: OK
+ */
 router.get('/health', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;
@@ -27,6 +41,20 @@ router.get('/health', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/v1/user:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Get all users
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     responses:
+ *       200:
+ *         description: success
+ */
 router.get('/', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;
@@ -37,6 +65,30 @@ router.get('/', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/v1/user/{id}:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Get user by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     responses:
+ *       200:
+ *         description: success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ */
 router.get('/:id', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;
@@ -47,6 +99,26 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/v1/user:
+ *   post:
+ *     tags:
+ *       - User
+ *     summary: Create a new user
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: success
+ */
 router.post('/', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;
@@ -57,6 +129,32 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/v1/user/{id}:
+ *   put:
+ *     tags:
+ *       - User
+ *     summary: Update user by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: success
+ */
 router.put('/:id', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;
@@ -67,6 +165,26 @@ router.put('/:id', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/v1/user/soft/{id}:
+ *   delete:
+ *     tags:
+ *       - User
+ *     summary: Soft delete user by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     responses:
+ *       200:
+ *         description: success
+ */
 router.delete('/soft/:id', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;
@@ -77,6 +195,26 @@ router.delete('/soft/:id', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/v1/user/{id}:
+ *   delete:
+ *     tags:
+ *       - User
+ *     summary: Hard delete user by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     responses:
+ *       200:
+ *         description: success
+ */
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;

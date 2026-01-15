@@ -54,6 +54,6 @@ export const setCacheValue = async (idempotencyKey: Request["idempotencyKey"], r
     await client.setEx(
         String(idempotencyKey),
         3600,
-        JSON.stringify(res.locals.response)
+        JSON.stringify(res.locals.response || { message: "Processed" })
     );
 }
