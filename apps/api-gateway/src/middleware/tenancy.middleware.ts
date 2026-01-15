@@ -1,23 +1,23 @@
 import { Request, Response, NextFunction } from "express";
 import logger from "../helpers/logger";
+import { TenancyClient } from "../services/tenancy.service";
+
+const tenancyClient = new TenancyClient();
 
 const handleError = (error: any, res: Response, context: string) => {
-    const statusCode = error.statusCode || 500;
-    const errorMessage = error.message || 'Internal server error';
-
-    if (error.statusCode >= 500 || error.message.includes("Tenant name mismatch")) {
+    if (error.statusCode >= 500 || error.message.includes("Tenant name mismatch") && !error.message.includes("Tenant not found")) {
         logger.error({
             "dt": Date(),
-            "service": "Gateway.IdempotencyService",
+            "service": "Gateway.TenancyMiddleware",
             "context": context,
             "message": error.message,
             "httpStatus": error.statusCode,
             "tenantId": error.tenantId
         });
-    } else {
+    } else if (!error?.message.includes("Tenant not found")) {
         logger.warn({
             "dt": Date(),
-            "service": "Gateway.IdempotencyService",
+            "service": "Gateway.TenancyMiddleware",
             "context": context,
             "message": error.message,
             "httpStatus": error.statusCode,
@@ -25,8 +25,15 @@ const handleError = (error: any, res: Response, context: string) => {
         });
     }
 
-    // Send clean response to user - NO stack trace
-    res.status(statusCode).json({ error: errorMessage });
+    // If it's already a clean error we threw manually
+    if (error && error.statusCode && error.message) {
+        throw error;
+    }
+
+    throw {
+        message: error.message || "Internal Service Communication Error",
+        statusCode: 500
+    };
 };
 
 export const tenancyMiddleware = async (
@@ -45,18 +52,22 @@ export const tenancyMiddleware = async (
         }
 
         if (!tenantId) {
-            throw new Error("Tenant ID not found");
+            throw { statusCode: 400, message: 'Tenant ID not found', tenantId };
         }
 
-        const tenantResponse = await fetch(`/api/v1/tenant/${tenantId}`);
-        if (!tenantResponse.ok) throw new Error('Failed to fetch tenant');
-        const tenantData = await tenantResponse.json();
+        const tenantResponse = await tenancyClient.getTenantById(tenantId as string, req.headers.authorization as string);
 
-        if (!tenantData) throw { statusCode: 404, message: 'Tenant not found', tenantId };
-        if (tenantData.name !== tenantName) throw { statusCode: 400, message: 'Tenant name mismatch', tenantId };
+        if (!tenantResponse) {
+            throw { statusCode: 404, message: 'Tenant not found', tenantId };
+        }
+
+        if (tenantResponse.tenant_name !== tenantName) {
+            throw { statusCode: 400, message: 'Tenant name mismatch', tenantId };
+        }
 
         next();
     } catch (error) {
         handleError(error, res, "TenancyMiddleware");
+        throw error;
     }
 };

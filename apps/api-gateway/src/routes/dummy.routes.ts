@@ -16,6 +16,19 @@ const handleRouteError = (err: any, res: Response, context: string) => {
     res.status(statusCode).json({ error: errorMessage });
 };
 
+/**
+ * @swagger
+ * /api/v1/dummy/health:
+ *   get:
+ *     tags:
+ *       - Dummy
+ *     summary: Dummy service health check
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: OK
+ */
 router.get('/health', async (req: Request, res: Response) => {
     try {
         const response = await client.getDummyHealth(req.headers.authorization);
@@ -25,6 +38,19 @@ router.get('/health', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/v1/dummy/dummyUser:
+ *   get:
+ *     tags:
+ *       - Dummy
+ *     summary: Get a dummy user
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: success
+ */
 router.get('/dummyUser', async (req: Request, res: Response) => {
     try {
         const user = await client.getDummyUser(req.headers.authorization);
