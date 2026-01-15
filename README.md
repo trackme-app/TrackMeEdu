@@ -33,6 +33,7 @@ TrackMe Education (TME) is an open-source, self-hostable Education & Learner Man
 - [Identity & Access Management (IAM)](./services/Administrative/Identity%20&%20Access%20Management/README.md)
 - [Staff Information](./services/Administrative/Staff%20Information/README.md)
 - [Student Information](./services/Administrative/Student%20Information/README.md)
+- [Tenancy Service](./services/Administrative/Tenancy/README.md)
 
 #### [Operations & Communication](./services/Operations%20&%20Communication/README.md)
 - [Attendance](./services/Operations%20&%20Communication/Attendance/README.md)

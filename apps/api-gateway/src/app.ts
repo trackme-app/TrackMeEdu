@@ -5,10 +5,15 @@ import courseRoutes from './routes/course.routes';
 import tenancyRoutes from './routes/tenancy.routes';
 import userRoutes from './routes/user.routes';
 import { idempotencyMiddleware, tenancyMiddleware } from './middleware';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger';
 
 const app = express();
 
 app.use(express.json());
+
+// Documentation
+app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use((req, res, next) => {
     if (req.method === "POST") {
