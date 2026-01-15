@@ -18,6 +18,20 @@ const handleRouteError = (err: any, res: Response, context: string) => {
     res.status(statusCode).json({ error: errorMessage });
 };
 
+/**
+ * @swagger
+ * /api/v1/course/health:
+ *   get:
+ *     tags:
+ *       - Course
+ *     summary: Course service health check
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     responses:
+ *       200:
+ *         description: OK
+ */
 router.get('/health', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;
@@ -28,6 +42,20 @@ router.get('/health', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/v1/course:
+ *   get:
+ *     tags:
+ *       - Course
+ *     summary: Get all courses
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     responses:
+ *       200:
+ *         description: success
+ */
 router.get('/', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;
@@ -38,6 +66,26 @@ router.get('/', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/v1/course/{id}:
+ *   get:
+ *     tags:
+ *       - Course
+ *     summary: Get course by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     responses:
+ *       200:
+ *         description: success
+ */
 router.get('/:id', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;
@@ -48,6 +96,26 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/v1/course:
+ *   post:
+ *     tags:
+ *       - Course
+ *     summary: Create a new course
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Course'
+ *     responses:
+ *       201:
+ *         description: Created
+ */
 router.post('/', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;
@@ -58,6 +126,32 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/v1/course/{id}:
+ *   put:
+ *     tags:
+ *       - Course
+ *     summary: Update course by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Course'
+ *     responses:
+ *       200:
+ *         description: success
+ */
 router.put('/:id', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;
@@ -68,6 +162,26 @@ router.put('/:id', async (req: Request, res: Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/v1/course/{id}:
+ *   delete:
+ *     tags:
+ *       - Course
+ *     summary: Delete course by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     responses:
+ *       200:
+ *         description: success
+ */
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'] as string;
