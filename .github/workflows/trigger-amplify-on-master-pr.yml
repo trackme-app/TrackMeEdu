@@ -1,4 +1,4 @@
-name: Trigger Amplify deployment on PR to master
+name: Deploy UI
 
 on:
   pull_request:

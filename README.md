@@ -1,4 +1,5 @@
 # TrackMe Education
+[![Trigger Amplify deployment on PR to master](https://github.com/trackme-app/TrackMeEdu/actions/workflows/trigger-amplify-on-master-pr.yml/badge.svg?branch=test&event=pull_request)](https://github.com/trackme-app/TrackMeEdu/actions/workflows/trigger-amplify-on-master-pr.yml)
 
 TrackMe Education (TME) is an open-source, self-hostable Education & Learner Management System (ELMS).
 
