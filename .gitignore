@@ -217,3 +217,5 @@ temp/
 *.old
 
 prettier-output.txt
+
+sample_data/
