@@ -46,3 +46,5 @@ router.post('/register', async (req: Request, res: Response) => {
         handleRouteError(err, res, 'POST /register');
     }
 });
+
+export default router;
