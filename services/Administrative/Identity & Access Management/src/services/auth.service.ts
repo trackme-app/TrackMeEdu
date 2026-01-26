@@ -9,22 +9,42 @@ import crypto from 'crypto';
 
 const TABLE_NAME = "Users";
 
-function generatePassword(length = 16) {
-    const charset =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
-        'abcdefghijklmnopqrstuvwxyz' +
-        '0123456789' +
-        '!@#$%^&*()-_=+[]{};:,.<>?';
-
-    const charsetLength = charset.length;
-    const randomBytes = crypto.randomBytes(length);
-    let password = '';
-
-    for (let i = 0; i < length; i++) {
-        password += charset[randomBytes[i] % charsetLength];
+function generatePassword(minLength = 12, maxLength = 18) {
+    if (minLength < 4) {
+        throw new Error('Minimum length must be at least 4');
     }
 
-    return password;
+    const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lower = 'abcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+    const special = '!@#$%^&*()-_=+[]{}|;:,.<>?';
+
+    const allChars = upper + lower + numbers + special;
+
+    const length = crypto.randomInt(minLength, maxLength + 1);
+
+    // Ensure at least one character from each required set
+    const passwordChars = [
+        upper[crypto.randomInt(upper.length)],
+        lower[crypto.randomInt(lower.length)],
+        numbers[crypto.randomInt(numbers.length)],
+        special[crypto.randomInt(special.length)],
+    ];
+
+    // Fill remaining length with random characters
+    for (let i = passwordChars.length; i < length; i++) {
+        passwordChars.push(
+            allChars[crypto.randomInt(allChars.length)]
+        );
+    }
+
+    // Securely shuffle (Fisher–Yates)
+    for (let i = passwordChars.length - 1; i > 0; i--) {
+        const j = crypto.randomInt(i + 1);
+        [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
+    }
+
+    return passwordChars.join('');
 }
 
 export const registerUser = async (tenantId: string, user: User): Promise<ServiceResponse<User>> => {
