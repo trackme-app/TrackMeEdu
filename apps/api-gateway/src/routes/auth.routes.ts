@@ -19,6 +19,30 @@ const handleRouteError = (err: any, res: Response, context: string) => {
 
 /**
  * @swagger
+ * /api/v1/auth/health:
+ *   get:
+ *     tags:
+ *       - Authentication
+ *     summary: Authentication service health check
+ *     security:
+ *       - bearerAuth: []
+ *       - tenantId: []
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+router.get('/health', async (req: Request, res: Response) => {
+    try {
+        const tenantId = req.headers['x-tenant-id'] as string;
+        const response = await client.getAuthHealth(tenantId, req.headers.authorization as string);
+        res.json(response);
+    } catch (err: any) {
+        handleRouteError(err, res, 'GET /health');
+    }
+});
+
+/**
+ * @swagger
  * /api/v1/auth/register:
  *   post:
  *     tags:

@@ -3,6 +3,10 @@ import { registerUser } from '../services/auth.service';
 import argon2 from 'argon2';
 const router = Router();
 
+router.get('/health', (req: Request, res: Response) => {
+    res.status(200).json({ status: 'ok' });
+});
+
 router.post('/login', async (req: Request, res: Response) => {
     try {
         res.status(200).json({ message: 'Login successful' });
