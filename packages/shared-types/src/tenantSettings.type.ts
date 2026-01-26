@@ -1,4 +1,5 @@
 import { ColourScheme } from "./colourScheme.type";
+import { PasswordPolicy } from "./passwordPolicy.type";
 
 export interface TenantSettings {
     data_residency_region: string; //AWS Region to store data in
@@ -9,4 +10,5 @@ export interface TenantSettings {
     ip_whitelist_enabled: boolean; // Whether IP whitelisting is enabled
     ip_whitelist: string[]; // List of IP addresses to whitelist
     colour_scheme?: ColourScheme;
+    password_policy?: PasswordPolicy;
 }
