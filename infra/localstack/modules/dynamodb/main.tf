@@ -18,7 +18,7 @@ locals {
     # Administrative Domain
     "Applications",
     "AdmissionDocuments",
-    "Users",
+    # "Users",
     "UserRoles",
     "Roles",
     "RolePermissions",
@@ -75,6 +75,45 @@ resource "aws_dynamodb_table" "tables" {
   }
 }
 
+# Create the users table
+resource "aws_dynamodb_table" "users" {
+  name           = "Users"
+  billing_mode   = "PAY_PER_REQUEST"
+  hash_key       = "tenantId"
+  range_key      = "id"
+
+  attribute {
+    name = "tenantId"
+    type = "S"
+  }
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+
+  attribute {
+    name = "username"
+    type = "S"
+  }
+
+  # GSI login by username
+  global_secondary_index {
+    name            = "GSI_Username"
+    hash_key        = "username"
+    projection_type = "ALL"
+  }
+
+  tags = {
+    Environment = "local"
+  }
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
+# Create the tenants table
 resource "aws_dynamodb_table" "tenants" {
   name           = "Tenants"
   billing_mode   = "PAY_PER_REQUEST"
