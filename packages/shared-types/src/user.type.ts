@@ -17,8 +17,8 @@ export type metaData = {                // Optional metadata
 };
 
 export interface User {
-    tenantId: string;                   // Tenant ID
-    id: string;                         // User ID
+    readonly tenantId: string;                   // Tenant ID
+    readonly id: string;                         // User ID
 
     firstName: string;                  // First name
     lastName: string;                   // Last name
@@ -39,7 +39,7 @@ export interface User {
     privacyPolicyAcceptedAt?: string;   // ISO UTC timestamp
 
     metaData?: metaData;                // Optional metadata
-    createdAt: string;                  // ISO UTC timestamp
-    updatedAt: string;                  // ISO UTC timestamp
+    readonly createdAt: string;                  // ISO UTC timestamp
+    modifiedAt: string;                 // ISO UTC timestamp
     deletedAt?: string;                 // ISO UTC timestamp
 }
