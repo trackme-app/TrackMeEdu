@@ -17,18 +17,19 @@ export type metaData = {                // Optional metadata
 };
 
 export interface User {
-    tenantId: string;                   // Tenant ID
-    id: string;                         // User ID
+    readonly tenantId: string;                   // Tenant ID
+    readonly id: string;                         // User ID
 
     firstName: string;                  // First name
     lastName: string;                   // Last name
     emailAddress: string;               // Email address
+    username?: string;
     dateOfBirth?: string;               // ISO UTC timestamp
     phoneNumber?: string;               // Phone number
 
     settings: UserSettings;             // User settings
 
-    passwordHash?: string;              // Optional, only defined for local users
+    password?: string;              // Optional, only defined for local users
     oauth?: OAuthIdentity;              // Only one OAuth link per user
     status: UserStatus;                 // e.g. pending, active, disabled, deleted
 
@@ -39,7 +40,7 @@ export interface User {
     privacyPolicyAcceptedAt?: string;   // ISO UTC timestamp
 
     metaData?: metaData;                // Optional metadata
-    createdAt: string;                  // ISO UTC timestamp
-    updatedAt: string;                  // ISO UTC timestamp
+    readonly createdAt: string;                  // ISO UTC timestamp
+    modifiedAt: string;                 // ISO UTC timestamp
     deletedAt?: string;                 // ISO UTC timestamp
 }

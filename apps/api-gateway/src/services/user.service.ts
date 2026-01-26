@@ -3,7 +3,7 @@ import axiosRetry from "axios-retry";
 import { User } from "@tme/shared-types";
 import logger from "../helpers/logger";
 
-const BASE_URL = process.env.USER_SERVICE_URL || "http://worker-iam:3000/api/v1/user";
+const BASE_URL = process.env.IAM_SERVICE_URL || "http://worker-iam:3000/api/v1/user";
 
 interface userHealth {
     status: string;
