@@ -1,5 +1,6 @@
 import { PutCommand, GetCommand, UpdateCommand, DeleteCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { User, ServiceResponse } from "@tme/shared-types";
+import { getUsersWithoutPassword, getUserWithoutPassword } from "../helpers";
 import dbclient from "../clients/dynamodb.client";
 import { v4 as uuidv4 } from "uuid";
 
@@ -25,7 +26,7 @@ export const getUserById = async (tenantId: string, id: string): Promise<Service
         return {
             success: true,
             statusCode: 200,
-            data: data.Item as User
+            data: getUserWithoutPassword(data.Item as User)
         };
     } catch (error) {
         return {
@@ -49,7 +50,7 @@ export const getUsers = async (tenantId: string): Promise<ServiceResponse<User[]
         return {
             success: true,
             statusCode: 200,
-            data: (data.Items as User[]) || []
+            data: getUsersWithoutPassword(data.Items as User[]) || []
         };
     } catch (error) {
         return {
@@ -115,7 +116,7 @@ export const insertUser = async (tenantId: string, user: User): Promise<ServiceR
         return {
             success: true,
             statusCode: 201,
-            data: data.Item as User
+            data: getUserWithoutPassword(data.Item as User)
         };
     } catch (error) {
         return {
@@ -151,7 +152,7 @@ export const updateUser = async (tenantId: string, id: string, user: Partial<Use
         const expressionAttributeNames: any = {};
 
         // Only update fields that are provided and NOT keys
-        const fieldsToUpdate = ['firstName', 'lastName', 'emailAddress', 'dateOfBirth', 'phoneNumber', 'settings', 'password', 'oauth', 'status', 'lastLoginAt', 'emailVerifiedAt', 'phoneNumberVerifiedAt', 'termsAcceptedAt', 'privacyPolicyAcceptedAt', 'metaData'];
+        const fieldsToUpdate = ['firstName', 'lastName', 'emailAddress', 'dateOfBirth', 'phoneNumber', 'settings', 'oauth', 'status', 'lastLoginAt', 'emailVerifiedAt', 'phoneNumberVerifiedAt', 'termsAcceptedAt', 'privacyPolicyAcceptedAt', 'metaData'];
 
         fieldsToUpdate.forEach(field => {
             const value = (user as any)[field];
