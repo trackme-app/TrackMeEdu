@@ -53,6 +53,10 @@ router.get('/:id', async (req: Request, res: Response) => {
 });
 
 router.put('/:id', async (req: Request, res: Response) => {
+    if (req.body.password) {
+        res.status(400).json({ error: 'Password cannot be updated via this endpoint.' });
+        return;
+    }
     try {
         const result = await updateUser(req.headers['x-tenant-id'] as string, req.params.id, req.body);
         const response = {

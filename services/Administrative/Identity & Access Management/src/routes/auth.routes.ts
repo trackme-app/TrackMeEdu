@@ -24,3 +24,5 @@ router.post('/', async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Failed to register user' });
     }
 });
+
+export default router;
