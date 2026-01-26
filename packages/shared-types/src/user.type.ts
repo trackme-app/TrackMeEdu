@@ -28,7 +28,7 @@ export interface User {
 
     settings: UserSettings;             // User settings
 
-    passwordHash?: string;              // Optional, only defined for local users
+    password?: string;              // Optional, only defined for local users
     oauth?: OAuthIdentity;              // Only one OAuth link per user
     status: UserStatus;                 // e.g. pending, active, disabled, deleted
 

@@ -151,7 +151,7 @@ export const updateUser = async (tenantId: string, id: string, user: Partial<Use
         const expressionAttributeNames: any = {};
 
         // Only update fields that are provided and NOT keys
-        const fieldsToUpdate = ['firstName', 'lastName', 'emailAddress', 'dateOfBirth', 'phoneNumber', 'settings', 'passwordHash', 'oauth', 'status', 'lastLoginAt', 'emailVerifiedAt', 'phoneNumberVerifiedAt', 'termsAcceptedAt', 'privacyPolicyAcceptedAt', 'metaData'];
+        const fieldsToUpdate = ['firstName', 'lastName', 'emailAddress', 'dateOfBirth', 'phoneNumber', 'settings', 'password', 'oauth', 'status', 'lastLoginAt', 'emailVerifiedAt', 'phoneNumberVerifiedAt', 'termsAcceptedAt', 'privacyPolicyAcceptedAt', 'metaData'];
 
         fieldsToUpdate.forEach(field => {
             const value = (user as any)[field];
