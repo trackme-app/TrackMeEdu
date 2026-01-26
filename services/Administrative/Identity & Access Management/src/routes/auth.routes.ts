@@ -1,10 +1,18 @@
 import { Router, Request, Response } from 'express';
 import { getUserById, getUsers, hardDeleteUser, insertUser, softDeleteUser, updateUser } from '../services/users.service';
+import argon2 from 'argon2';
 const router = Router();
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/register', async (req: Request, res: Response) => {
     try {
-        const result = await insertUser(req.headers['x-tenant-id'] as string, req.body);
+        const { password, ...user } = req.body;
+        const hashedPassword = await argon2.hash(password, {
+            type: argon2.argon2id,
+            memoryCost: 2 ** 16,
+            timeCost: 3,
+            parallelism: 1
+        });
+        const result = await insertUser(req.headers['x-tenant-id'] as string, { ...user, password: hashedPassword });
         const response = {
             success: result.success,
             statusCode: result.statusCode,
