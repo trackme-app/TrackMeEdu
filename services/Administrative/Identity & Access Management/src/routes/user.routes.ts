@@ -52,29 +52,6 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
-router.post('/', async (req: Request, res: Response) => {
-    try {
-        const result = await insertUser(req.headers['x-tenant-id'] as string, req.body);
-        const response = {
-            success: result.success,
-            statusCode: result.statusCode,
-            data: result.data,
-            error: result.error,
-            tenantId: req.headers['x-tenant-id'] as string,
-            path: req.originalUrl
-        };
-
-        if (!response.success) {
-            res.status(response.statusCode).json({ error: response.error });
-            return;
-        }
-
-        res.status(response.statusCode).json(response.data);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to create user' });
-    }
-});
-
 router.put('/:id', async (req: Request, res: Response) => {
     try {
         const result = await updateUser(req.headers['x-tenant-id'] as string, req.params.id, req.body);
