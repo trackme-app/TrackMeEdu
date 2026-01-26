@@ -4,11 +4,41 @@ import { getUserWithoutPassword } from "../helpers";
 import dbclient from "../clients/dynamodb.client";
 import { v4 as uuidv4 } from "uuid";
 import { getUsers } from "./users.service";
+import argon2 from 'argon2';
+import crypto from 'crypto';
 
 const TABLE_NAME = "Users";
 
+function generatePassword(length = 16) {
+    const charset =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+        'abcdefghijklmnopqrstuvwxyz' +
+        '0123456789' +
+        '!@#$%^&*()-_=+[]{};:,.<>?';
+
+    const charsetLength = charset.length;
+    const randomBytes = crypto.randomBytes(length);
+    let password = '';
+
+    for (let i = 0; i < length; i++) {
+        password += charset[randomBytes[i] % charsetLength];
+    }
+
+    return password;
+}
+
 export const registerUser = async (tenantId: string, user: User): Promise<ServiceResponse<User>> => {
     try {
+        if (!user.password) {
+            user.password = generatePassword();
+        }
+        const hashedPassword = await argon2.hash(String(user.password), {
+            type: argon2.argon2id,
+            memoryCost: 2 ** 16,
+            timeCost: 3,
+            parallelism: 1
+        });
+
         const username = user.username || user.emailAddress;
         // Check if user with same name already exists
         const usersResponse = await getUsers(tenantId);
@@ -28,6 +58,7 @@ export const registerUser = async (tenantId: string, user: User): Promise<Servic
         const userItem = {
             ...user,
             username,
+            password: hashedPassword,
             tenantId,
             id,
             createdAt: new Date().toISOString(),
