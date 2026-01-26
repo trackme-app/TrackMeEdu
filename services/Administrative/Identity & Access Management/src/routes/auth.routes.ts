@@ -1,7 +1,31 @@
 import { Router, Request, Response } from 'express';
-import { getUserById, getUsers, hardDeleteUser, insertUser, softDeleteUser, updateUser } from '../services/users.service';
+import { registerUser } from '../services/auth.service';
 import argon2 from 'argon2';
 const router = Router();
+
+router.post('/login', async (req: Request, res: Response) => {
+    try {
+        res.status(200).json({ message: 'Login successful' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to login' });
+    }
+});
+
+router.post('/changepassword', async (req: Request, res: Response) => {
+    try {
+        res.status(200).json({ message: 'Password changed successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to change password' });
+    }
+});
+
+router.post('/resetpassword', async (req: Request, res: Response) => {
+    try {
+        res.status(200).json({ message: 'Password reset successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to reset password' });
+    }
+});
 
 router.post('/register', async (req: Request, res: Response) => {
     try {
@@ -12,7 +36,7 @@ router.post('/register', async (req: Request, res: Response) => {
             timeCost: 3,
             parallelism: 1
         });
-        const result = await insertUser(req.headers['x-tenant-id'] as string, { ...user, password: hashedPassword });
+        const result = await registerUser(req.headers['x-tenant-id'] as string, { ...user, password: hashedPassword });
         const response = {
             success: result.success,
             statusCode: result.statusCode,

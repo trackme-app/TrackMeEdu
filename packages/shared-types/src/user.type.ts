@@ -23,6 +23,7 @@ export interface User {
     firstName: string;                  // First name
     lastName: string;                   // Last name
     emailAddress: string;               // Email address
+    username?: string;
     dateOfBirth?: string;               // ISO UTC timestamp
     phoneNumber?: string;               // Phone number
 

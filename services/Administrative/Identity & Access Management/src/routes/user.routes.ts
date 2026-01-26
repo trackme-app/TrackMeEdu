@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getUserById, getUsers, hardDeleteUser, insertUser, softDeleteUser, updateUser } from '../services/users.service';
+import { getUserById, getUsers, hardDeleteUser, softDeleteUser, updateUser } from '../services/users.service';
 const router = Router();
 
 router.get('/health', (req: Request, res: Response) => {
