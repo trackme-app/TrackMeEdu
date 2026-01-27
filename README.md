@@ -15,6 +15,45 @@ TrackMe Education (TME) is an open-source, self-hostable Education & Learner Man
 - `packages/`   → Shared libraries, types, and utilities used across the monorepo.
 - `infra/`      → Infrastructure as Code and local AWS parity tools (LocalStack).
 
+## Local Development
+This repository is designed to be run locally for development purposes. To do this, you will need to have openssl, Docker and Docker Compose installed on your system. Download and install them from the following links:
+- [OpenSSL](https://www.openssl.org/)
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+For additional development ease, it is recommended to also install:
+- [NodeJS](https://nodejs.org/)
+
+Once the pre-reqs are installed, download the repository and navigate to the root directory then run the command
+```bash
+sudo chmod +x run-dev.sh
+```
+### Starting a development environment
+To start the local development environment, run the following commands (following any prompts):
+```bash
+./run-dev.sh -init
+./run-dev.sh -start
+```
+**NOTE**: You will be prompted for a 'LOCAL_DOMAIN' value. This is used where VPNs are in use. If you are not using a VPN, please ensure set this value to 'tme.local'.
+
+The start process is complete once you see the line 'awscli-1 exited with code 0'. At this point, the application should be reachable on http://localhost:5173. 
+
+**NOTE**: You can detach from the logs by pressing the `d` key on your keyboard if you wish to use the terminal for other things.
+
+### Stopping a development environment
+To stop the local development environment, run the following command:
+```bash
+./run-dev.sh -stop
+```
+
+### Cleaning up a development environment
+To clean up any previous configuration and containers/images/volumes, run **one of** the following command:
+```bash
+sudo ./run-dev.sh -stop-clean
+sudo ./run-dev.sh -clean
+```
+**NOTE**: You may be prompted to input your sudo password while running these commands.
+
 ## Documentation Index
 
 ### Applications
@@ -41,9 +80,6 @@ TrackMe Education (TME) is an open-source, self-hostable Education & Learner Man
 - [Finance & Fees](./services/Operations%20&%20Communication/Finance%20&%20Fees/README.md)
 - [Library](./services/Operations%20&%20Communication/Library/README.md)
 - [Notifications](./services/Operations%20&%20Communication/Notifications/README.md)
-
-## Local Development
-Docker and Docker Compose are used to simulate AWS services locally.
 
 ## Architecture
 The system is designed to be modular and scalable, with each service responsible for a specific domain of functionality. The API Gateway serves as the single entry point for all client requests, routing them to the appropriate microservice based on the request path.

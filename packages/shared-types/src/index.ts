@@ -8,3 +8,4 @@ export * from './tenantSettings.type';
 export * from './colourScheme.type';
 export * from './user.type';
 export * from './oauthIdentity.type';
+export * from './passwordPolicy.type';

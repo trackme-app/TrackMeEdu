@@ -16,6 +16,7 @@
     "build:shared": "npm run build --workspace @tme/shared-types",
     "build:apps": "npm run build --workspaces --if-present --include-workspace-root=false",
     "terra:build": "terraform -chdir=infra/localstack apply -auto-approve",
-    "terra:destroy": "terraform -chdir=infra/localstack destroy -auto-approve"
+    "terra:destroy": "terraform -chdir=infra/localstack destroy -auto-approve",
+    "test:generateData": "npx ts-node sample_data/generate_data.ts"
   }
 }
