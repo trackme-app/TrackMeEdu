@@ -1,7 +1,7 @@
 # TrackMe Education
 [![Trigger Amplify deployment on PR to master](https://github.com/trackme-app/TrackMeEdu/actions/workflows/trigger-amplify-on-master-pr.yml/badge.svg?branch=test&event=pull_request)](https://github.com/trackme-app/TrackMeEdu/actions/workflows/trigger-amplify-on-master-pr.yml)
 
-TrackMe Education (TME) is an open-source, self-hostable Education & Learner Management System (ELMS).
+TrackMe Education (TME) is an open-source, self-hostable Education & Learner Management System (ELMS). 
 
 ## Goals
 - AWS-native architecture
@@ -34,7 +34,7 @@ To start the local development environment, run the following commands (followin
 ./run-dev.sh -init
 ./run-dev.sh -start
 ```
-**NOTE**: You will be prompted for a 'LOCAL_DOMAIN' value. This is used where VPNs are in use. If you are not using a VPN, please ensure set this value to 'tme.local'.
+**NOTE**: You will be prompted for a 'LOCAL_DOMAIN' value. This is used where VPNs are in use. If you are not using a VPN, please ensure set this value to 'tme.local'. If using a VPN, multi-tenancy is enabled using the highest-level portion of the domain as the tenant name. If no VPN is used, the tenant name 'test' will be assumed and multi-tenancy will not work.
 
 The start process is complete once you see the line 'awscli-1 exited with code 0'. At this point, the application should be reachable on http://localhost:5173. 
 
