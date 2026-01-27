@@ -1,3 +1,8 @@
+variable "aws_endpoint" {
+  type    = string
+  default = "http://localhost:4566"
+}
+
 terraform {
   required_providers {
     aws = {
@@ -16,7 +21,7 @@ provider "aws" {
   skip_requesting_account_id  = true
 
   endpoints {
-    ec2      = "http://localhost:4566"
-    dynamodb = "http://localhost:4566"
+    ec2      = var.aws_endpoint
+    dynamodb = var.aws_endpoint
   }
 }
