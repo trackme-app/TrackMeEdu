@@ -1,9 +1,12 @@
+import fs from "fs";
+import https from "https";
 import axios, { AxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
 import { ColourScheme, Tenant, TenantSettings } from "@tme/shared-types";
 import logger from "../helpers/logger";
+import config from "../config/config";
 
-const BASE_URL = process.env.TENANCY_SERVICE_URL || "http://worker-tenancy:3000/api/v1/tenant";
+const BASE_URL = process.env.TENANCY_SERVICE_URL || "https://worker-tenancy:3000/api/v1/tenant";
 
 interface tenancyHealth {
     status: string;
@@ -15,8 +18,17 @@ export class TenancyClient {
 
     constructor(baseUrl?: string) {
         this.baseUrl = baseUrl || BASE_URL;
+
+        const httpsAgent = config.ssl ? new https.Agent({
+            key: fs.readFileSync(config.ssl.key),
+            cert: fs.readFileSync(config.ssl.cert),
+            ca: fs.readFileSync(config.ssl.ca),
+            rejectUnauthorized: true
+        }) : undefined;
+
         this.axiosInstance = axios.create({
-            validateStatus: () => true // Handle all status codes manually
+            validateStatus: () => true, // Handle all status codes manually
+            httpsAgent: httpsAgent
         });
 
         axiosRetry(this.axiosInstance, {

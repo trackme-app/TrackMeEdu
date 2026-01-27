@@ -1,0 +1,241 @@
+name: TrackMe_Edu
+services:
+  ###               ###
+  # Frontend Services #
+  ###               ###
+  ui:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    ports:
+      - "5173:80"
+    restart: always
+    environment:
+      - VITE_BACKGROUND_COLOUR_LIGHTMODE=${VITE_BACKGROUND_COLOUR_LIGHTMODE}
+      - VITE_FOREGROUND_COLOUR_LIGHTMODE=${VITE_FOREGROUND_COLOUR_LIGHTMODE}
+      - VITE_ALT_COLOUR_LIGHTMODE=${VITE_ALT_COLOUR_LIGHTMODE}
+      - VITE_NAV_COLOUR_LIGHTMODE=${VITE_NAV_COLOUR_LIGHTMODE}
+      - VITE_BORDER_COLOUR_LIGHTMODE=${VITE_BORDER_COLOUR_LIGHTMODE}
+
+      - VITE_BACKGROUND_COLOUR_DARKMODE=${VITE_BACKGROUND_COLOUR_DARKMODE}
+      - VITE_FOREGROUND_COLOUR_DARKMODE=${VITE_FOREGROUND_COLOUR_DARKMODE}
+      - VITE_ALT_COLOUR_DARKMODE=${VITE_ALT_COLOUR_DARKMODE}
+      - VITE_NAV_COLOUR_DARKMODE=${VITE_NAV_COLOUR_DARKMODE}
+      - VITE_BORDER_COLOUR_DARKMODE=${VITE_BORDER_COLOUR_DARKMODE}
+
+      - VITE_BUTTON_COLOUR_POSITIVE_LIGHTMODE=${VITE_BUTTON_COLOUR_POSITIVE_LIGHTMODE}
+      - VITE_BUTTON_COLOUR_POSITIVE_DARKMODE=${VITE_BUTTON_COLOUR_POSITIVE_DARKMODE}
+      - VITE_BUTTON_COLOUR_NEGATIVE_LIGHTMODE=${VITE_BUTTON_COLOUR_NEGATIVE_LIGHTMODE}
+      - VITE_BUTTON_COLOUR_NEGATIVE_DARKMODE=${VITE_BUTTON_COLOUR_NEGATIVE_DARKMODE}
+
+      - LOCAL_DOMAIN=${LOCAL_DOMAIN}
+    networks:
+      - public
+      - apigateway
+    depends_on:
+      - api-gateway
+    volumes:
+      - ./certs:/certs:ro
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:80" ]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+      start_period: 5s
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: apps/api-gateway/Dockerfile
+    networks:
+      - apigateway
+      - private
+      - redis
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOCAL_DOMAIN=${LOCAL_DOMAIN}
+      - SSL_KEY_PATH=/certs/api-gateway.key
+      - SSL_CERT_PATH=/certs/api-gateway.crt
+      - SSL_CA_PATH=/certs/ca.crt
+    depends_on:
+      - redis
+    volumes:
+      - ./certs:/certs:ro
+    #ports:
+    #  - "3000:3000"
+    healthcheck:
+      test: [ "CMD", "wget", "--no-check-certificate", "-O", "-", "https://localhost:3000/api/v1/health" ]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+      start_period: 5s
+
+  ###          ###
+  # Test Service #
+  ###          ###
+  zzdummyservice:
+    build:
+      context: .
+      dockerfile: services/zzDummyService/Dockerfile
+    networks:
+      - private
+      - localstack
+    environment:
+      - SSL_KEY_PATH=/certs/zzdummyservice.key
+      - SSL_CERT_PATH=/certs/zzdummyservice.crt
+      - SSL_CA_PATH=/certs/ca.crt
+    volumes:
+      - ./certs:/certs:ro
+    healthcheck:
+      test: [ "CMD", "wget", "--no-check-certificate", "-O", "-", "https://localhost:3000/api/v1/dummy/health" ]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+      start_period: 5s
+
+  ###            ###
+  # Administrative #
+  ###            ###
+  worker-tenancy:
+    build:
+      context: .
+      dockerfile: ./services/Administrative/Tenancy/Dockerfile
+    networks:
+      - private
+      - localstack
+    environment:
+      - SSL_KEY_PATH=/certs/worker-tenancy.key
+      - SSL_CERT_PATH=/certs/worker-tenancy.crt
+      - SSL_CA_PATH=/certs/ca.crt
+    volumes:
+      - ./certs:/certs:ro
+    healthcheck:
+      test: [ "CMD", "wget", "--no-check-certificate", "-O", "-", "https://localhost:3000/api/v1/tenant/health" ]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+      start_period: 5s
+
+  worker-iam:
+    build:
+      context: .
+      dockerfile: ./services/Administrative/Identity & Access Management/Dockerfile
+    networks:
+      - private
+      - localstack
+    environment:
+      - SSL_KEY_PATH=/certs/worker-iam.key
+      - SSL_CERT_PATH=/certs/worker-iam.crt
+      - SSL_CA_PATH=/certs/ca.crt
+    volumes:
+      - ./certs:/certs:ro
+    healthcheck:
+      test: [ "CMD", "wget", "--no-check-certificate", "-O", "-", "https://localhost:3000/api/v1/user/health" ]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+      start_period: 5s
+
+  ###                 ###
+  # Academic & Learning #
+  ###                 ###
+  worker-courseandcurriculum:
+    build:
+      context: .
+      dockerfile: ./services/Academic & Learning/Course & Curriculum/Dockerfile
+    networks:
+      - private
+      - localstack
+    environment:
+      - SSL_KEY_PATH=/certs/worker-courseandcurriculum.key
+      - SSL_CERT_PATH=/certs/worker-courseandcurriculum.crt
+      - SSL_CA_PATH=/certs/ca.crt
+    volumes:
+      - ./certs:/certs:ro
+    healthcheck:
+      test: [ "CMD", "wget", "--no-check-certificate", "-O", "-", "https://localhost:3000/api/v1/course/health" ]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+      start_period: 5s
+
+  ###                   ###
+  # Local Stack Emulation #
+  ###                   ###
+
+  awscli:
+    image: amazon/aws-cli:2.32.29
+    networks:
+      - localstack
+    environment:
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    command: '--endpoint-url http://localstack:4566 --region eu-west-2 dynamodb list-tables'
+    depends_on:
+      terraform-provisioner:
+        condition: service_completed_successfully
+
+  redis:
+    image: redis:latest
+    networks:
+      - redis
+    volumes:
+      - redis_data:/data
+
+  localstack:
+    image: localstack/localstack
+    container_name: localstack
+    ports:
+      - 4566:4566
+    networks:
+      - localstack
+    environment:
+      - SERVICES=s3, dynamodb, ec2
+      - GATEWAY_LISTEN=0.0.0.0:4566
+      - LS_LOG=warning
+    volumes:
+      - ./temp/localstack/localstack:/docker-entrypoint-initaws.d"
+      - "${LOCALSTACK_VOLUME_DIR:-./temp/localstack/data}:/var/lib/localstack"
+    healthcheck:
+      test: [ "CMD", "curl", "-q", "http://localhost:4566" ]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+      start_period: 5s
+
+  terraform-provisioner:
+    image: hashicorp/terraform:latest
+    networks:
+      - localstack
+    volumes:
+      - ./infra/localstack:/infra
+    working_dir: /infra
+    environment:
+      - TF_VAR_aws_endpoint=http://localstack:4566
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=eu-west-2
+    entrypoint: /bin/sh -c
+    command: >
+      "terraform init && terraform apply -auto-approve"
+    depends_on:
+      localstack:
+        condition: service_healthy
+
+networks:
+  public:
+    driver: bridge
+  apigateway:
+    driver: bridge
+  private:
+    driver: bridge
+  localstack:
+    driver: bridge
+  redis:
+    driver: bridge
+
+volumes:
+  tailscale-state:
+    driver: local
+  redis_data:
+    driver: local
