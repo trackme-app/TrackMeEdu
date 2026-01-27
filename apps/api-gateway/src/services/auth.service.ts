@@ -2,23 +2,17 @@ import fs from "fs";
 import https from "https";
 import axios, { AxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
+import { User } from "@tme/shared-types";
 import logger from "../helpers/logger";
 import config from "../config/config";
 
-const BASE_URL = process.env.DUMMY_SERVICE_URL || "https://zzdummyservice:3000/api/v1/dummy";
+const BASE_URL = process.env.IAM_SERVICE_URL || "https://worker-iam:3000/api/v1/auth";
 
-interface DummyUser {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
-}
-
-interface DummyHealth {
+interface authHealth {
     status: string;
 }
 
-export class DummyClient {
+export class AuthClient {
     private baseUrl: string;
     private axiosInstance: AxiosInstance;
 
@@ -33,7 +27,7 @@ export class DummyClient {
         }) : undefined;
 
         this.axiosInstance = axios.create({
-            validateStatus: () => true,
+            validateStatus: () => true, // Handle all status codes manually
             httpsAgent: httpsAgent
         });
 
@@ -48,7 +42,7 @@ export class DummyClient {
         if (error.statusCode >= 500) {
             logger.error({
                 "dt": Date(),
-                "service": "Gateway.DummyClient",
+                "service": "Gateway.UserClient",
                 "context": context,
                 "message": error.message,
                 "httpStatus": error.statusCode,
@@ -57,7 +51,7 @@ export class DummyClient {
         } else {
             logger.warn({
                 "dt": Date(),
-                "service": "Gateway.DummyClient",
+                "service": "Gateway.UserClient",
                 "context": context,
                 "message": error.message,
                 "httpStatus": error.statusCode,
@@ -65,10 +59,12 @@ export class DummyClient {
             });
         }
 
+        // If it's already a clean error we threw manually
         if (error && error.statusCode && error.message) {
             throw error;
         }
 
+        // Handle Axios error (though validateStatus: () => true should prevent most throws)
         if (axios.isAxiosError(error) && error.response) {
             throw {
                 message: error.response.data?.error || error.response.data?.message || error.message,
@@ -82,39 +78,59 @@ export class DummyClient {
         };
     }
 
-    async getDummyHealth(authToken?: string): Promise<DummyHealth> {
+    async getAuthHealth(tenantId: string, authToken?: string): Promise<authHealth> {
         try {
-            const res = await this.axiosInstance.get<DummyHealth>(`${this.baseUrl}/health`, {
+            const res = await this.axiosInstance.get<authHealth>(`${this.baseUrl}/health`, {
                 headers: {
+                    "X-Tenant-Id": tenantId,
                     ...(authToken ? { Authorization: authToken } : {}),
-                },
+                }
             });
 
             if (res.status !== 200) {
-                throw { message: "Health check failed", statusCode: res.status };
+                throw {
+                    message: "Health check failed",
+                    tenantId: tenantId,
+                    statusCode: res.status
+                };
             }
             return res.data;
         } catch (error) {
-            this.handleError(error, "getDummyHealth");
-            throw error;
+            this.handleError(error, "getAuthHealth");
+            throw error; // Re-shadow for TS
         }
     }
 
-    async getDummyUser(authToken?: string): Promise<DummyUser> {
+    async registerUser(tenantId: string, user: User, authToken?: string): Promise<User> {
         try {
-            const res = await this.axiosInstance.get<DummyUser | { error: string }>(`${this.baseUrl}/dummyUser`, {
+            const res = await this.axiosInstance.post<User | { error: string }>(`${this.baseUrl}/register`, user, {
                 headers: {
+                    "X-Tenant-Id": tenantId,
                     ...(authToken ? { Authorization: authToken } : {}),
-                },
+                }
             });
 
             if (res.status >= 300) {
                 const data = res.data as { error: string };
-                throw { message: data.error || "Dummy user not found", statusCode: res.status };
+                throw {
+                    message: data.error || "Failed to create user",
+                    tenantId: tenantId,
+                    statusCode: res.status
+                };
             }
-            return res.data as DummyUser;
+
+            logger.info({
+                "dt": Date(),
+                "service": "Gateway.UserClient",
+                "context": "insertUser",
+                "message": "User created successfully",
+                "httpStatus": res.status,
+                "tenantId": tenantId
+            });
+
+            return res.data as User;
         } catch (error) {
-            this.handleError(error, "getDummyUser");
+            this.handleError(error, "insertUser");
             throw error;
         }
     }

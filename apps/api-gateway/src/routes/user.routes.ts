@@ -101,36 +101,6 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/v1/user:
- *   post:
- *     tags:
- *       - User
- *     summary: Create a new user
- *     security:
- *       - bearerAuth: []
- *       - tenantId: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/User'
- *     responses:
- *       200:
- *         description: success
- */
-router.post('/', async (req: Request, res: Response) => {
-    try {
-        const tenantId = req.headers['x-tenant-id'] as string;
-        const response = await client.insertUser(tenantId, req.body, req.headers.authorization as string);
-        res.json(response);
-    } catch (err: any) {
-        handleRouteError(err, res, 'POST /');
-    }
-});
-
-/**
- * @swagger
  * /api/v1/user/{id}:
  *   put:
  *     tags:

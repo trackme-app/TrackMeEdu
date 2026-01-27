@@ -4,6 +4,7 @@ import healthRoutes from './routes/health.routes';
 import courseRoutes from './routes/course.routes';
 import tenancyRoutes from './routes/tenancy.routes';
 import userRoutes from './routes/user.routes';
+import authRoutes from './routes/auth.routes';
 import { idempotencyMiddleware, tenancyMiddleware } from './middleware';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger';
@@ -27,6 +28,7 @@ app.use('/api/v1/health', healthRoutes);
 app.use('/api/v1/dummy', dummyRoutes);
 app.use('/api/v1/course', [tenancyMiddleware], courseRoutes);
 app.use('/api/v1/tenant', tenancyRoutes);
+app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoutes);
 
 // Global error handler - catches any unhandled errors

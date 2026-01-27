@@ -12,10 +12,6 @@ pnpm-debug.log*
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
-# Uncomment if you want lockfiles tracked
-# !package-lock.json
-# !yarn.lock
-# !pnpm-lock.yaml
 
 
 ############################################
@@ -34,51 +30,6 @@ coverage/
 **/lib/
 **/coverage/
 
-
-############################################
-# MONOREPO TOOLS
-############################################
-# Nx
-nx-cache/
-.nx/
-tmp/nx/
-
-# Turborepo
-.turbo/
-
-# Lerna
-lerna-debug.log*
-
-# Rush
-common/temp/
-.rush/
-
-
-############################################
-# FRAMEWORK-SPECIFIC
-############################################
-# Next.js
-.next/
-**/.next/
-
-# NestJS
-dist/
-**/dist/
-
-# Vite
-.vite/
-
-# React / CRA
-.cache/
-.eslintcache
-
-# Serverless
-.serverless/
-
-# Prisma
-prisma/migrations/**/migration_lock.toml
-
-
 ############################################
 # ENVIRONMENT VARIABLES & SECRETS
 ############################################
@@ -88,6 +39,7 @@ prisma/migrations/**/migration_lock.toml
 
 **/.env
 **/.env.*
+!**/.env.example
 
 secrets/
 **/secrets/
@@ -131,7 +83,6 @@ test-results/
 ############################################
 # DOCKER
 ############################################
-.dockerignore
 docker-compose.override.yml
 docker-compose.local.yml
 
@@ -203,6 +154,15 @@ Desktop.ini
 # Linux
 *~
 
+############################################
+# CERTIFICATES AND KEYS
+############################################
+certs/
+**/certs/
+*.crt
+*.key
+*.pem
+*.srl
 
 ############################################
 # MISC
@@ -217,3 +177,5 @@ temp/
 *.old
 
 prettier-output.txt
+
+sample_data/
